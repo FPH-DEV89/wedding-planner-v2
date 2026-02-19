@@ -19,7 +19,7 @@ export const StaggerContainer = ({
             variants={{
                 show: {
                     transition: {
-                        staggerChildren: 0.05,
+                        staggerChildren: 0.1,
                     },
                 },
             }}
@@ -42,10 +42,10 @@ export const StaggerItem = ({
         <Component
             className={className}
             variants={{
-                hidden: { opacity: 0, y: 10 },
+                hidden: { opacity: 0, y: 20 },
                 show: { opacity: 1, y: 0 },
             }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
         >
             {children}
         </Component>

@@ -1,5 +1,8 @@
+"use client"
+
 import { Sidebar } from "@/components/shared/Sidebar"
 import { Navbar } from "@/components/shared/Navbar"
+import { AnimatePresence } from "framer-motion"
 
 const DashboardLayout = ({
     children
@@ -13,7 +16,9 @@ const DashboardLayout = ({
             </div>
             <main className="md:pl-72">
                 <Navbar />
-                {children}
+                <AnimatePresence mode="wait">
+                    {children}
+                </AnimatePresence>
             </main>
         </div>
     )
