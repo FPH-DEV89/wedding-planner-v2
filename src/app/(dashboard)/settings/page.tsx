@@ -1,28 +1,48 @@
-"use client"
-
 import { Settings2 } from "lucide-react"
+import { auth } from "@/lib/auth"
+import { SettingsForm } from "@/features/settings/components/settings-form"
+import prisma from "@/lib/prisma"
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+    const session = await auth()
+
+    let user = null
+    if (session?.user?.email) {
+        user = await prisma.user.findUnique({
+            where: { email: session.user.email }
+        })
+    }
+
     return (
         <div className="flex-col">
             <div className="flex-1 space-y-4 p-8 pt-6">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-3xl font-bold tracking-tight text-white">Paramètres</h2>
-                        <p className="text-sm text-zinc-400">
-                            Gérez les détails de votre mariage et vos préférences.
+                        <h2 className="text-3xl font-serif font-bold tracking-tight text-[#c96d4b]">Paramètres</h2>
+                        <p className="text-sm text-[#7c6d66] font-medium mt-1">
+                            Gérez les détails de votre profil et de votre mariage.
                         </p>
                     </div>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-8">
-                    <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-6 flex flex-col items-center justify-center text-center space-y-4 h-64 opacity-50">
-                        <Settings2 className="h-12 w-12 text-zinc-700" />
-                        <div>
-                            <h3 className="text-lg font-semibold text-white">Configuration du Mariage</h3>
-                            <p className="text-sm text-zinc-500">Date, lieu et informations générales.</p>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mt-8">
+                    <div className="bg-[#fdfaf7] border border-[#e9ded0] rounded-3xl p-6 flex flex-col space-y-6 shadow-sm">
+                        <div className="flex items-center gap-4">
+                            <div className="p-3 bg-white rounded-2xl shadow-sm border border-[#e9ded0]">
+                                <Settings2 className="h-6 w-6 text-[#c96d4b]" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-serif font-bold text-[#3a2a22]">Profil</h3>
+                                <p className="text-xs text-[#7c6d66]">Informations personnelles</p>
+                            </div>
                         </div>
-                        <p className="text-xs text-zinc-600 italic">Bientôt disponible</p>
+
+                        <SettingsForm initialName={user?.name || ""} />
+                    </div>
+
+                    {/* Placeholder for future settings */}
+                    <div className="bg-white/50 border border-dashed border-[#e9ded0] rounded-3xl p-6 flex flex-col items-center justify-center text-center space-y-4 opacity-60">
+                        <p className="text-sm font-serif font-bold text-[#7c6d66]">Plus d'options bientôt...</p>
                     </div>
                 </div>
             </div>
