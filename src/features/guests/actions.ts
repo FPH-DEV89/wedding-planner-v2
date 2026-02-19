@@ -30,9 +30,12 @@ export async function createGuest(values: GuestFormValues) {
     }
 
     try {
+        const { listId, ...rest } = validatedFields.data
+
         const guest = await prisma.guest.create({
             data: {
-                ...validatedFields.data,
+                ...rest,
+                listId: listId || null,
                 userId: MOCK_USER_ID,
             },
         })
@@ -54,10 +57,13 @@ export async function updateGuest(id: string, values: GuestFormValues) {
     }
 
     try {
+        const { listId, ...rest } = validatedFields.data
+
         await prisma.guest.update({
             where: { id },
             data: {
-                ...validatedFields.data,
+                ...rest,
+                listId: listId || null,
             },
         })
 
