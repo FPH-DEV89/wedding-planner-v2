@@ -30,8 +30,8 @@ import { createGuestList, deleteGuestList } from "@/features/guest-lists/actions
 interface Guest {
     id: string
     name: string
-    role?: string | null
-    status: string
+    relation?: string | null
+    category?: string | null
     listId?: string | null
 }
 
@@ -75,6 +75,7 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
     }
 
     const onDelete = async (id: string) => {
+        if (!window.confirm("Supprimer cet invité ?")) return
         try {
             const response = await deleteGuest(id)
             if (response.error) {
@@ -84,17 +85,6 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
             }
         } catch (error) {
             toast.error("Erreur lors de la suppression.")
-        }
-    }
-
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case "CONFIRMED":
-                return <Badge className="bg-emerald-500">Confirmé</Badge>
-            case "REJECTED":
-                return <Badge variant="destructive">Absent</Badge>
-            default:
-                return <Badge variant="secondary">En attente</Badge>
         }
     }
 
@@ -123,7 +113,7 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
                     <Button
                         variant="outline"
                         onClick={onAddList}
-                        className="border-zinc-800 text-zinc-400 hover:text-white"
+                        className="border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800"
                     >
                         <Settings2 className="mr-2 h-4 w-4" /> Gérer les listes
                     </Button>
@@ -132,13 +122,13 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
                         if (!val) setEditingGuest(null)
                     }}>
                         <DialogTrigger asChild>
-                            <Button className="bg-pink-600 hover:bg-pink-700">
+                            <Button className="bg-pink-600 hover:bg-pink-700 text-white font-medium">
                                 <Plus className="mr-2 h-4 w-4" /> Ajouter
                             </Button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px] bg-zinc-950 border-zinc-800 text-white">
                             <DialogHeader>
-                                <DialogTitle>
+                                <DialogTitle className="text-xl font-semibold">
                                     {editingGuest ? "Modifier l'invité" : "Ajouter un invité"}
                                 </DialogTitle>
                             </DialogHeader>
@@ -153,12 +143,12 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
             </div>
 
             <Tabs defaultValue="all" className="mt-8" onValueChange={setSelectedListId}>
-                <TabsList className="bg-zinc-900 border border-zinc-800">
-                    <TabsTrigger value="all">Tous</TabsTrigger>
+                <TabsList className="bg-zinc-900 border border-zinc-800 p-1">
+                    <TabsTrigger value="all" className="data-[state=active]:bg-zinc-800">Tous</TabsTrigger>
                     {guestLists.map((list) => (
-                        <TabsTrigger key={list.id} value={list.id} className="group flex items-center gap-2">
+                        <TabsTrigger key={list.id} value={list.id} className="group flex items-center gap-2 data-[state=active]:bg-zinc-800">
                             {list.name}
-                            <span className="text-[10px] bg-zinc-800 px-1.5 py-0.5 rounded-full">
+                            <span className="text-[10px] bg-zinc-800 px-1.5 py-0.5 rounded-full text-zinc-400 group-data-[state=active]:text-white">
                                 {list._count?.guests || 0}
                             </span>
                             <Trash
@@ -173,36 +163,40 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
                 </TabsList>
             </Tabs>
 
-            <div className="mt-4 rounded-md border border-zinc-800 bg-zinc-900/50">
+            <div className="mt-4 rounded-xl border border-zinc-800 bg-zinc-900/30 overflow-hidden">
                 <Table>
                     <TableHeader>
-                        <TableRow className="hover:bg-transparent border-zinc-800">
-                            <TableHead className="text-zinc-400">Nom</TableHead>
-                            <TableHead className="text-zinc-400">Rôle</TableHead>
-                            <TableHead className="text-zinc-400">Statut</TableHead>
+                        <TableRow className="hover:bg-transparent border-zinc-800 bg-zinc-900/50">
+                            <TableHead className="text-zinc-400 font-medium">Nom</TableHead>
+                            <TableHead className="text-zinc-400 font-medium">Relation</TableHead>
+                            <TableHead className="text-zinc-400 font-medium">Catégorie</TableHead>
                             <TableHead className="w-[100px]"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {filteredData.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={4} className="h-24 text-center text-zinc-500">
+                                <TableCell colSpan={4} className="h-32 text-center text-zinc-500 italic">
                                     Aucun invité dans cette liste.
                                 </TableCell>
                             </TableRow>
                         ) : (
                             filteredData.map((guest) => (
-                                <TableRow key={guest.id} className="border-zinc-800 hover:bg-white/5 text-zinc-300">
-                                    <TableCell className="font-medium">{guest.name}</TableCell>
-                                    <TableCell>{guest.role || "-"}</TableCell>
-                                    <TableCell>{getStatusBadge(guest.status)}</TableCell>
+                                <TableRow key={guest.id} className="border-zinc-800 hover:bg-white/5 text-zinc-300 transition-colors">
+                                    <TableCell className="font-medium text-white">{guest.name}</TableCell>
+                                    <TableCell className="text-zinc-400">{guest.relation || "-"}</TableCell>
                                     <TableCell>
-                                        <div className="flex items-center gap-2">
+                                        <Badge variant="outline" className="border-zinc-700 bg-zinc-800/50 text-zinc-300 font-normal">
+                                            {guest.category || "Standard"}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-1">
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => onEdit(guest)}
-                                                className="text-zinc-400 hover:text-white"
+                                                className="text-zinc-500 hover:text-white hover:bg-zinc-800"
                                             >
                                                 <Pencil className="h-4 w-4" />
                                             </Button>
@@ -210,7 +204,7 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => onDelete(guest.id)}
-                                                className="text-zinc-400 hover:text-red-500"
+                                                className="text-zinc-500 hover:text-red-500 hover:bg-red-500/10"
                                             >
                                                 <Trash className="h-4 w-4" />
                                             </Button>

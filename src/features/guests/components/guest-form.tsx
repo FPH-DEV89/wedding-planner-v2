@@ -30,10 +30,8 @@ interface GuestFormProps {
     initialData?: {
         id: string
         name: string
-        role?: string | null
-        status: string
-        table?: string | null
-        dietaryRequirements?: string | null
+        relation?: string | null
+        category?: string | null
         listId?: string | null
     } | null
     guestLists: {
@@ -50,8 +48,8 @@ export const GuestForm = ({ initialData, guestLists, onSuccess }: GuestFormProps
         resolver: zodResolver(GuestSchema) as any,
         defaultValues: {
             name: initialData?.name || "",
-            role: initialData?.role || "",
-            status: (initialData?.status as any) || "PENDING",
+            relation: initialData?.relation || "",
+            category: initialData?.category || "",
             listId: initialData?.listId || guestLists[0]?.id || "",
         },
     })
@@ -96,11 +94,11 @@ export const GuestForm = ({ initialData, guestLists, onSuccess }: GuestFormProps
                                 defaultValue={field.value}
                             >
                                 <FormControl>
-                                    <SelectTrigger>
+                                    <SelectTrigger className="bg-zinc-950 border-zinc-800">
                                         <SelectValue placeholder="Choisir une liste" />
                                     </SelectTrigger>
                                 </FormControl>
-                                <SelectContent>
+                                <SelectContent className="bg-zinc-950 border-zinc-800">
                                     {guestLists.map((list) => (
                                         <SelectItem key={list.id} value={list.id}>
                                             {list.name}
@@ -117,9 +115,9 @@ export const GuestForm = ({ initialData, guestLists, onSuccess }: GuestFormProps
                     name="name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Nom Complet</FormLabel>
+                            <FormLabel>Nom</FormLabel>
                             <FormControl>
-                                <Input disabled={loading} placeholder="Jean Dupont" {...field} />
+                                <Input disabled={loading} placeholder="Jean Dupont" {...field} className="bg-zinc-950 border-zinc-800" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -128,12 +126,12 @@ export const GuestForm = ({ initialData, guestLists, onSuccess }: GuestFormProps
                 <div className="grid grid-cols-2 gap-4">
                     <FormField
                         control={form.control}
-                        name="role"
+                        name="relation"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Rôle</FormLabel>
+                                <FormLabel>Relation</FormLabel>
                                 <FormControl>
-                                    <Input disabled={loading} placeholder="Famille, Ami..." {...field} />
+                                    <Input disabled={loading} placeholder="Famille, Ami..." {...field} className="bg-zinc-950 border-zinc-800" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -141,32 +139,19 @@ export const GuestForm = ({ initialData, guestLists, onSuccess }: GuestFormProps
                     />
                     <FormField
                         control={form.control}
-                        name="status"
+                        name="category"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Statut</FormLabel>
-                                <Select
-                                    disabled={loading}
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                >
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Sélectionner un statut" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="PENDING">En attente</SelectItem>
-                                        <SelectItem value="CONFIRMED">Confirmé</SelectItem>
-                                        <SelectItem value="REJECTED">Absent</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                <FormLabel>Catégorie</FormLabel>
+                                <FormControl>
+                                    <Input disabled={loading} placeholder="Confirmé, VIP, En attente..." {...field} className="bg-zinc-950 border-zinc-800" />
+                                </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                 </div>
-                <Button disabled={loading} className="ml-auto w-full bg-pink-600 hover:bg-pink-700" type="submit">
+                <Button disabled={loading} className="ml-auto w-full bg-pink-600 hover:bg-pink-700 font-medium" type="submit">
                     {initialData ? "Enregistrer les modifications" : "Ajouter l'invité"}
                 </Button>
             </form>

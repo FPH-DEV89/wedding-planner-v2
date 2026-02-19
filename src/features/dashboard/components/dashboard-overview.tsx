@@ -16,7 +16,13 @@ export const DashboardOverview = async () => {
     })
 
     const confirmedGuests = await prisma.guest.count({
-        where: { userId: MOCK_USER_ID, status: "CONFIRMED" }
+        where: {
+            userId: MOCK_USER_ID,
+            category: {
+                contains: "Confirmé",
+                mode: 'insensitive'
+            }
+        }
     })
 
     const budgetItems = await prisma.budgetItem.findMany({

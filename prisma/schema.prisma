@@ -36,8 +36,8 @@ model GuestList {
 model Guest {
   id        String     @id @default(cuid())
   name      String
-  role      String?
-  status    String     @default("PENDING")
+  relation  String?
+  category  String?
   userId    String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
