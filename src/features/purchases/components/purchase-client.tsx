@@ -26,6 +26,8 @@ import { cn } from "@/lib/utils"
 import { PurchaseForm } from "./purchase-form"
 import { deletePurchase } from "../actions"
 import { Purchase } from "../schema"
+import { StaggerContainer, StaggerItem } from "@/components/shared/staggered-motion"
+import { motion } from "framer-motion"
 
 interface PurchaseClientProps {
     initialData: Purchase[]
@@ -116,7 +118,7 @@ export const PurchaseClient = ({ initialData }: PurchaseClientProps) => {
                             <TableHead className="w-[100px]"></TableHead>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>
+                    <StaggerContainer as={motion.tbody} className="[&_tr:last-child]:border-0">
                         {initialData.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={6} className="h-32 text-center text-muted-foreground font-serif italic text-lg">
@@ -125,7 +127,11 @@ export const PurchaseClient = ({ initialData }: PurchaseClientProps) => {
                             </TableRow>
                         ) : (
                             initialData.map((purchase) => (
-                                <TableRow key={purchase.id} className="border-border/40 hover:bg-white/60 transition-colors group">
+                                <StaggerItem
+                                    key={purchase.id}
+                                    as={motion.tr}
+                                    className="border-b border-border/40 hover:bg-white/60 transition-colors group"
+                                >
                                     <TableCell>
                                         <div className="flex items-center gap-2">
                                             <span className="font-serif font-bold text-lg text-foreground group-hover:text-primary transition-colors">{purchase.type}</span>
@@ -175,10 +181,10 @@ export const PurchaseClient = ({ initialData }: PurchaseClientProps) => {
                                             </Button>
                                         </div>
                                     </TableCell>
-                                </TableRow>
+                                </StaggerItem>
                             ))
                         )}
-                    </TableBody>
+                    </StaggerContainer>
                 </Table>
             </div>
         </div>

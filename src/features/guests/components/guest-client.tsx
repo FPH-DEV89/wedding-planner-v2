@@ -26,6 +26,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { GuestForm } from "./guest-form"
 import { deleteGuest } from "../actions"
 import { createGuestList, deleteGuestList } from "@/features/guest-lists/actions"
+import { StaggerContainer, StaggerItem } from "@/components/shared/staggered-motion"
+import { motion } from "framer-motion"
 
 interface Guest {
     id: string
@@ -203,7 +205,7 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
                                 <TableHead className="w-[120px]"></TableHead>
                             </TableRow>
                         </TableHeader>
-                        <TableBody>
+                        <StaggerContainer as={motion.tbody} className="[&_tr:last-child]:border-0">
                             {filteredData.length === 0 ? (
                                 <TableRow>
                                     <TableCell colSpan={4} className="h-40 text-center text-muted-foreground italic bg-muted/5">
@@ -212,7 +214,11 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
                                 </TableRow>
                             ) : (
                                 filteredData.map((guest) => (
-                                    <TableRow key={guest.id} className="border-border/60 hover:bg-muted/20 transition-colors">
+                                    <StaggerItem
+                                        key={guest.id}
+                                        as={motion.tr}
+                                        className="border-b border-border/60 hover:bg-muted/20 transition-colors"
+                                    >
                                         <TableCell className="font-medium text-foreground">{guest.name}</TableCell>
                                         <TableCell className="text-muted-foreground italic text-sm">{guest.relation || "-"}</TableCell>
                                         <TableCell>
@@ -240,10 +246,10 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
                                                 </Button>
                                             </div>
                                         </TableCell>
-                                    </TableRow>
+                                    </StaggerItem>
                                 ))
                             )}
-                        </TableBody>
+                        </StaggerContainer>
                     </Table>
                 </div>
             </div>

@@ -26,6 +26,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { VendorForm } from "./vendor-form"
 import { deleteVendor } from "../actions"
 import { Vendor } from "../schema"
+import { StaggerContainer, StaggerItem } from "@/components/shared/staggered-motion"
+import { motion } from "framer-motion"
 
 interface VendorClientProps {
     initialData: Vendor[]
@@ -152,7 +154,7 @@ export const VendorClient = ({ initialData }: VendorClientProps) => {
                             <TableHead className="w-[100px]"></TableHead>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>
+                    <StaggerContainer as={motion.tbody} className="[&_tr:last-child]:border-0">
                         {initialData.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={6} className="h-32 text-center text-muted-foreground font-serif italic text-lg">
@@ -161,7 +163,11 @@ export const VendorClient = ({ initialData }: VendorClientProps) => {
                             </TableRow>
                         ) : (
                             initialData.map((vendor) => (
-                                <TableRow key={vendor.id} className="border-border/40 hover:bg-white/60 transition-colors group">
+                                <StaggerItem
+                                    key={vendor.id}
+                                    as={motion.tr}
+                                    className="border-b border-border/40 hover:bg-white/60 transition-colors group"
+                                >
                                     <TableCell>
                                         <div className="font-serif font-bold text-lg text-foreground group-hover:text-primary transition-colors">{vendor.name}</div>
                                         <div className="text-xs text-muted-foreground uppercase tracking-wider font-bold">{vendor.category}</div>
@@ -210,10 +216,10 @@ export const VendorClient = ({ initialData }: VendorClientProps) => {
                                             </Button>
                                         </div>
                                     </TableCell>
-                                </TableRow>
+                                </StaggerItem>
                             ))
                         )}
-                    </TableBody>
+                    </StaggerContainer>
                 </Table>
             </div>
         </div>
