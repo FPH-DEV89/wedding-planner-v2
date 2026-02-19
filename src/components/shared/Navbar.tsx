@@ -2,15 +2,15 @@ import { MobileSidebar } from "./MobileSidebar"
 import { auth } from "@/lib/auth"
 import prisma from "@/lib/prisma"
 
+const MOCK_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
+
 export const Navbar = async () => {
     const session = await auth()
+    const userId = session?.user?.id || MOCK_USER_ID
 
-    let user = null
-    if (session?.user?.email) {
-        user = await prisma.user.findUnique({
-            where: { email: session.user.email }
-        })
-    }
+    const user = await prisma.user.findUnique({
+        where: { id: userId }
+    })
 
     const displayName = user?.name || "Invité"
     const initials = displayName

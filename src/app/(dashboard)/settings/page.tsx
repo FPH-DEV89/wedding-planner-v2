@@ -3,15 +3,15 @@ import { auth } from "@/lib/auth"
 import { SettingsForm } from "@/features/settings/components/settings-form"
 import prisma from "@/lib/prisma"
 
+const MOCK_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
+
 export default async function SettingsPage() {
     const session = await auth()
+    const userId = session?.user?.id || MOCK_USER_ID
 
-    let user = null
-    if (session?.user?.email) {
-        user = await prisma.user.findUnique({
-            where: { email: session.user.email }
-        })
-    }
+    const user = await prisma.user.findUnique({
+        where: { id: userId }
+    })
 
     return (
         <div className="flex-col">
