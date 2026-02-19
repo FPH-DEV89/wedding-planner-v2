@@ -9,10 +9,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 
 const MOCK_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
+const WEDDING_DATE = new RegExp("2026-09-12T00:00:00Z") // Target date
+const WEDDING_DATE_OBJ = new Date("2026-09-12")
 
 export const DashboardOverview = async () => {
-    const guestCount = await prisma.guest.count({
+    const guestCounts = await prisma.guest.count({
         where: { userId: MOCK_USER_ID }
+    })
+
+    const guestLists = await prisma.guestList.findMany({
+        where: { userId: MOCK_USER_ID },
+        include: {
+            _count: {
+                select: { guests: true }
+            }
+        }
     })
 
     const confirmedGuests = await prisma.guest.count({
@@ -43,18 +54,22 @@ export const DashboardOverview = async () => {
     const totalVendors = vendors.reduce((acc: number, v: { price: number }) => acc + v.price, 0)
     const paidVendors = vendors.reduce((acc: number, v: { paidAmount: number }) => acc + v.paidAmount, 0)
 
-    const totalPurchases = purchases.reduce((acc: number, p: { price: number }) => acc + p.price, 0)
-    const paidPurchases = purchases.reduce((acc: number, p: { isPaid: boolean, price: number }) => acc + (p.isPaid ? p.price : 0), 0)
+    const totalPurchases = purchases.reduce((acc: number, p: { price: number, quantity: number }) => acc + (p.price * p.quantity), 0)
+    const paidPurchases = purchases.reduce((acc: number, p: { isPaid: boolean, price: number, quantity: number }) => acc + (p.isPaid ? (p.price * p.quantity) : 0), 0)
 
     const totalBudget = totalBudgetItems + totalVendors + totalPurchases
     const totalPaid = paidBudgetItems + paidVendors + paidPurchases
     const remaining = totalBudget - totalPaid
 
+    const now = new Date()
+    const diffTime = WEDDING_DATE_OBJ.getTime() - now.getTime()
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
     const stats = [
         {
             title: "Invités",
-            value: `${confirmedGuests} / ${guestCount}`,
-            description: "Confirmés / Total",
+            value: `${guestCounts}`,
+            description: guestLists.map((l: any) => `${l.name}: ${l._count.guests}`).join(", "),
             icon: Users,
             color: "text-sky-500",
             href: "/guests"
@@ -62,7 +77,7 @@ export const DashboardOverview = async () => {
         {
             title: "Budget Total",
             value: `${totalBudget.toLocaleString('fr-FR')} €`,
-            description: "Items + Prestataires + Achats",
+            description: "Dépenses + Prestataires + Achats",
             icon: CreditCard,
             color: "text-emerald-500",
             href: "/budget"
@@ -70,15 +85,15 @@ export const DashboardOverview = async () => {
         {
             title: "Restant à financer",
             value: `${remaining.toLocaleString('fr-FR')} €`,
-            description: "Montant total restant",
+            description: "Sur un total de " + totalBudget.toLocaleString('fr-FR') + " €",
             icon: Clock,
             color: "text-orange-500",
             href: "/budget"
         },
         {
             title: "Jours restants",
-            value: "142", // Mock value for now
-            description: "Avant le grand jour",
+            value: `${diffDays}`,
+            description: "Avant le 12/09/2026",
             icon: Heart,
             color: "text-pink-500",
             href: "/settings"

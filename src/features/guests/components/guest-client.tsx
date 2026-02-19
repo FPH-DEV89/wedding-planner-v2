@@ -100,6 +100,13 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
         }
     }
 
+    const guestStats = {
+        adults: initialData.filter(g => g.category?.toLowerCase().includes("adulte")).length,
+        teens: initialData.filter(g => g.category?.toLowerCase().includes("ado")).length,
+        kids: initialData.filter(g => g.category?.toLowerCase().includes("enfant")).length,
+        providers: initialData.filter(g => g.category?.toLowerCase().includes("presta") || g.category?.toLowerCase().includes("serveur")).length,
+    }
+
     return (
         <>
             <div className="flex flex-col gap-4 md:flex-row md:items-center justify-between">
@@ -139,6 +146,25 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
                             />
                         </DialogContent>
                     </Dialog>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                <div className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
+                    <p className="text-xs text-zinc-500 uppercase font-semibold">Adultes</p>
+                    <p className="text-2xl font-bold text-white">{guestStats.adults}</p>
+                </div>
+                <div className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
+                    <p className="text-xs text-zinc-500 uppercase font-semibold">Ados</p>
+                    <p className="text-2xl font-bold text-white">{guestStats.teens}</p>
+                </div>
+                <div className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
+                    <p className="text-xs text-zinc-500 uppercase font-semibold">Enfants</p>
+                    <p className="text-2xl font-bold text-white">{guestStats.kids}</p>
+                </div>
+                <div className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
+                    <p className="text-xs text-zinc-500 uppercase font-semibold">Prestataires</p>
+                    <p className="text-2xl font-bold text-pink-500">{guestStats.providers}</p>
                 </div>
             </div>
 
