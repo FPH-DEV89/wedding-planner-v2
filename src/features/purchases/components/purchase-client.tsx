@@ -94,12 +94,12 @@ export const PurchaseClient = ({ initialData }: PurchaseClientProps) => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-6 bg-white border border-[#e9ded0] rounded-3xl shadow-sm group hover:shadow-md transition-all duration-300">
-                    <p className="text-xs font-bold text-[#7c6d66] uppercase tracking-widest">Budget Achats</p>
+                <div className="p-6 bg-[#fdfaf7] border border-[#e9ded0] rounded-3xl shadow-sm group hover:shadow-md transition-all duration-300">
+                    <p className="text-xs font-bold text-[#7c6d66] uppercase tracking-widest">Budget Achats 🏛️</p>
                     <p className="text-4xl font-serif font-extrabold text-[#3a2a22] mt-1">{totalBudget.toLocaleString()} €</p>
                 </div>
-                <div className="p-6 bg-white border border-[#e9ded0] rounded-3xl shadow-sm group hover:shadow-md transition-all duration-300">
-                    <p className="text-xs font-bold text-[#7c6d66] uppercase tracking-widest">Payé</p>
+                <div className="p-6 bg-[#fdfaf7] border border-[#e9ded0] rounded-3xl shadow-sm group hover:shadow-md transition-all duration-300">
+                    <p className="text-xs font-bold text-[#7c6d66] uppercase tracking-widest">Payé 🏛️</p>
                     <p className="text-4xl font-serif font-extrabold text-[#8c9b84] mt-1">{totalPaid.toLocaleString()} €</p>
                 </div>
             </div>
