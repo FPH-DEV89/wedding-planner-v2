@@ -2,6 +2,8 @@ import { getGuests } from "@/features/guests/actions"
 import { getGuestLists } from "@/features/guest-lists/actions"
 import { GuestClient } from "@/features/guests/components/guest-client"
 
+export const dynamic = "force-dynamic"
+
 export default async function GuestsPage() {
     const guestsResponse = await getGuests()
     const listsResponse = await getGuestLists()
