@@ -154,7 +154,7 @@ export const TaskForm = ({ initialData, onSuccess, labels }: TaskFormProps) => {
                                             <Button
                                                 variant={"outline"}
                                                 className={cn(
-                                                    "w-full pl-3 text-left font-normal border-zinc-800 bg-zinc-950 text-white",
+                                                    "w-full pl-3 text-left font-normal border-border/40 bg-white rounded-xl text-foreground focus:ring-[#c96d4b]/20 transition-all",
                                                     !field.value && "text-muted-foreground"
                                                 )}
                                             >
@@ -167,7 +167,7 @@ export const TaskForm = ({ initialData, onSuccess, labels }: TaskFormProps) => {
                                             </Button>
                                         </FormControl>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0 bg-zinc-950 border-zinc-800" align="start">
+                                    <PopoverContent className="w-auto p-0 bg-white border-border/40 rounded-2xl shadow-xl" align="start">
                                         <Calendar
                                             mode="single"
                                             selected={field.value}
@@ -194,7 +194,7 @@ export const TaskForm = ({ initialData, onSuccess, labels }: TaskFormProps) => {
                                         type="time"
                                         disabled={loading}
                                         {...field}
-                                        className="border-zinc-800 bg-zinc-950 text-white"
+                                        className="border-border/40 bg-white rounded-xl text-foreground focus:ring-[#c96d4b]/20 transition-all"
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -215,11 +215,11 @@ export const TaskForm = ({ initialData, onSuccess, labels }: TaskFormProps) => {
                                     defaultValue={field.value}
                                 >
                                     <FormControl>
-                                        <SelectTrigger className="border-zinc-800 bg-zinc-950">
+                                        <SelectTrigger className="border-border/40 bg-white rounded-xl focus:ring-[#c96d4b]/20 transition-all text-foreground">
                                             <SelectValue placeholder="Statut" />
                                         </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent className="bg-zinc-950 border-zinc-800">
+                                    <SelectContent className="bg-white border-border/40 rounded-xl shadow-lg">
                                         <SelectItem value="TODO">À faire</SelectItem>
                                         <SelectItem value="IN_PROGRESS">En cours</SelectItem>
                                         <SelectItem value="DONE">Terminé</SelectItem>
@@ -241,11 +241,11 @@ export const TaskForm = ({ initialData, onSuccess, labels }: TaskFormProps) => {
                                     defaultValue={field.value}
                                 >
                                     <FormControl>
-                                        <SelectTrigger className="border-zinc-800 bg-zinc-950">
+                                        <SelectTrigger className="border-border/40 bg-white rounded-xl focus:ring-[#c96d4b]/20 transition-all text-foreground">
                                             <SelectValue placeholder="Priorité" />
                                         </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent className="bg-zinc-950 border-zinc-800">
+                                    <SelectContent className="bg-white border-border/40 rounded-xl shadow-lg">
                                         <SelectItem value="LOW">Basse</SelectItem>
                                         <SelectItem value="MEDIUM">Moyenne</SelectItem>
                                         <SelectItem value="HIGH">Haute</SelectItem>
@@ -256,7 +256,11 @@ export const TaskForm = ({ initialData, onSuccess, labels }: TaskFormProps) => {
                         )}
                     />
                 </div>
-                <Button disabled={loading} className="ml-auto w-full bg-pink-600 hover:bg-pink-700" type="submit">
+                <Button
+                    disabled={loading}
+                    className="ml-auto w-full bg-[#c96d4b] hover:bg-[#b05a3a] text-white font-bold h-12 rounded-2xl shadow-lg transition-all hover:shadow-[#c96d4b]/20 active:scale-95"
+                    type="submit"
+                >
                     {initialData ? "Enregistrer les modifications" : (labels?.submit || "Ajouter la tâche")}
                 </Button>
             </form>

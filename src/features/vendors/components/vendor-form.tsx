@@ -129,11 +129,11 @@ export const VendorForm = ({ initialData, onSuccess }: VendorFormProps) => {
                                     defaultValue={field.value}
                                 >
                                     <FormControl>
-                                        <SelectTrigger className="bg-zinc-950 border-zinc-800">
+                                        <SelectTrigger className="bg-white border-border/40 rounded-xl focus:ring-primary/20 transition-all">
                                             <SelectValue placeholder="Choisir" />
                                         </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent className="bg-zinc-950 border-zinc-800">
+                                    <SelectContent className="bg-white border-border/40 rounded-xl">
                                         {categories.map((category) => (
                                             <SelectItem key={category} value={category}>
                                                 {category}
@@ -157,11 +157,11 @@ export const VendorForm = ({ initialData, onSuccess }: VendorFormProps) => {
                                     defaultValue={field.value}
                                 >
                                     <FormControl>
-                                        <SelectTrigger className="bg-zinc-950 border-zinc-800">
+                                        <SelectTrigger className="bg-white border-border/40 rounded-xl focus:ring-[#c96d4b]/20 transition-all">
                                             <SelectValue placeholder="Statut" />
                                         </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent className="bg-zinc-950 border-zinc-800">
+                                    <SelectContent className="bg-white border-border/40 rounded-xl">
                                         <SelectItem value="RESEARCH">En recherche</SelectItem>
                                         <SelectItem value="CONTACTED">Contacté</SelectItem>
                                         <SelectItem value="BOOKED">Réservé</SelectItem>
@@ -254,7 +254,11 @@ export const VendorForm = ({ initialData, onSuccess }: VendorFormProps) => {
                         </FormItem>
                     )}
                 />
-                <Button disabled={loading} className="ml-auto w-full bg-pink-600 hover:bg-pink-700" type="submit">
+                <Button
+                    disabled={loading}
+                    className="ml-auto w-full bg-[#c96d4b] hover:bg-[#b05a3a] text-white font-bold h-12 rounded-2xl shadow-lg transition-all hover:shadow-[#c96d4b]/20 active:scale-95"
+                    type="submit"
+                >
                     {initialData ? "Enregistrer les modifications" : "Ajouter le prestataire"}
                 </Button>
             </form>

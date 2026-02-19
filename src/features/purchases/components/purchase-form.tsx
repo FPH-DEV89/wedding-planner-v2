@@ -133,10 +133,10 @@ export const PurchaseForm = ({ initialData, onSuccess }: PurchaseFormProps) => {
                     control={form.control}
                     name="isPaid"
                     render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border border-zinc-800 p-4">
+                        <FormItem className="flex flex-row items-center justify-between rounded-2xl border border-[#e9ded0] p-4 bg-white">
                             <div className="space-y-0.5">
-                                <FormLabel className="text-base">Payé</FormLabel>
-                                <FormDescription className="text-zinc-500">
+                                <FormLabel className="text-base font-serif font-bold text-[#3a2a22]">Payé</FormLabel>
+                                <FormDescription className="text-[#7c6d66]">
                                     Cochez si cet achat a déjà été réglé.
                                 </FormDescription>
                             </div>
@@ -145,12 +145,17 @@ export const PurchaseForm = ({ initialData, onSuccess }: PurchaseFormProps) => {
                                     checked={field.value}
                                     onCheckedChange={field.onChange}
                                     disabled={loading}
+                                    className="data-[state=checked]:bg-[#8c9b84]"
                                 />
                             </FormControl>
                         </FormItem>
                     )}
                 />
-                <Button disabled={loading} className="ml-auto w-full bg-pink-600 hover:bg-pink-700" type="submit">
+                <Button
+                    disabled={loading}
+                    className="ml-auto w-full bg-[#c96d4b] hover:bg-[#b05a3a] text-white font-bold h-12 rounded-2xl shadow-lg transition-all hover:shadow-[#c96d4b]/20 active:scale-95"
+                    type="submit"
+                >
                     {initialData ? "Enregistrer les modifications" : "Ajouter l'achat"}
                 </Button>
             </form>

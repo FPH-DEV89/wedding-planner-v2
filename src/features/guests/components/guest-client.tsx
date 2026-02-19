@@ -109,138 +109,143 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
 
     return (
         <>
-            <div className="flex flex-col gap-4 md:flex-row md:items-center justify-between">
-                <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-white">Invités</h2>
-                    <p className="text-sm text-zinc-400">
-                        {guestLists.length} listes d'invités actives.
-                    </p>
+            <div className="space-y-10">
+                <div className="flex flex-col gap-4 md:flex-row md:items-center justify-between">
+                    <div>
+                        <h2 className="text-4xl font-serif font-bold tracking-tight text-[#c96d4b]">Invités</h2>
+                        <p className="text-sm text-[#7c6d66] mt-1">
+                            {guestLists.length} listes d'invités actives pour votre mariage.
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <Button
+                            variant="ghost"
+                            onClick={onAddList}
+                            className="text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-xl border border-border/40"
+                        >
+                            <Settings2 className="mr-2 h-4 w-4" /> Gérer les listes
+                        </Button>
+                        <Dialog open={open} onOpenChange={(val) => {
+                            setOpen(val)
+                            if (!val) setEditingGuest(null)
+                        }}>
+                            <DialogTrigger asChild>
+                                <Button className="bg-[#c96d4b] hover:bg-[#b05a3a] text-white font-bold rounded-xl px-6 shadow-md transition-all active:scale-95">
+                                    <Plus className="mr-2 h-4 w-4" /> Ajouter un invité
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[425px] bg-background border-border/60 rounded-3xl shadow-2xl">
+                                <DialogHeader>
+                                    <DialogTitle className="text-2xl font-serif font-bold text-primary">
+                                        {editingGuest ? "Modifier l'invité" : "Ajouter un invité"}
+                                    </DialogTitle>
+                                </DialogHeader>
+                                <GuestForm
+                                    initialData={editingGuest}
+                                    guestLists={guestLists}
+                                    onSuccess={() => setOpen(false)}
+                                />
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Button
-                        variant="outline"
-                        onClick={onAddList}
-                        className="border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800"
-                    >
-                        <Settings2 className="mr-2 h-4 w-4" /> Gérer les listes
-                    </Button>
-                    <Dialog open={open} onOpenChange={(val) => {
-                        setOpen(val)
-                        if (!val) setEditingGuest(null)
-                    }}>
-                        <DialogTrigger asChild>
-                            <Button className="bg-pink-600 hover:bg-pink-700 text-white font-medium">
-                                <Plus className="mr-2 h-4 w-4" /> Ajouter
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px] bg-zinc-950 border-zinc-800 text-white">
-                            <DialogHeader>
-                                <DialogTitle className="text-xl font-semibold">
-                                    {editingGuest ? "Modifier l'invité" : "Ajouter un invité"}
-                                </DialogTitle>
-                            </DialogHeader>
-                            <GuestForm
-                                initialData={editingGuest}
-                                guestLists={guestLists}
-                                onSuccess={() => setOpen(false)}
-                            />
-                        </DialogContent>
-                    </Dialog>
-                </div>
-            </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-                <div className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
-                    <p className="text-xs text-zinc-500 uppercase font-semibold">Adultes</p>
-                    <p className="text-2xl font-bold text-white">{guestStats.adults}</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div className="group p-6 bg-white border border-[#e9ded0] rounded-3xl shadow-sm hover:shadow-md transition-all">
+                        <p className="text-[10px] text-[#7c6d66] uppercase font-bold tracking-widest">Adultes</p>
+                        <p className="text-3xl font-serif font-bold text-[#3a2a22] mt-1 group-hover:text-[#c96d4b] transition-colors">{guestStats.adults}</p>
+                    </div>
+                    <div className="group p-6 bg-white border border-[#e9ded0] rounded-3xl shadow-sm hover:shadow-md transition-all">
+                        <p className="text-[10px] text-[#7c6d66] uppercase font-bold tracking-widest">Ados</p>
+                        <p className="text-3xl font-serif font-bold text-[#3a2a22] mt-1 group-hover:text-[#c96d4b] transition-colors">{guestStats.teens}</p>
+                    </div>
+                    <div className="group p-6 bg-white border border-[#e9ded0] rounded-3xl shadow-sm hover:shadow-md transition-all">
+                        <p className="text-[10px] text-[#7c6d66] uppercase font-bold tracking-widest">Enfants</p>
+                        <p className="text-3xl font-serif font-bold text-[#3a2a22] mt-1 group-hover:text-[#c96d4b] transition-colors">{guestStats.kids}</p>
+                    </div>
+                    <div className="group p-6 bg-[#fdfaf7] border border-[#8c9b84]/20 rounded-3xl shadow-sm hover:shadow-md transition-all">
+                        <p className="text-[10px] text-[#8c9b84] uppercase font-bold tracking-widest">Prestataires</p>
+                        <p className="text-3xl font-serif font-bold text-[#8c9b84] mt-1">{guestStats.providers}</p>
+                    </div>
                 </div>
-                <div className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
-                    <p className="text-xs text-zinc-500 uppercase font-semibold">Ados</p>
-                    <p className="text-2xl font-bold text-white">{guestStats.teens}</p>
-                </div>
-                <div className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
-                    <p className="text-xs text-zinc-500 uppercase font-semibold">Enfants</p>
-                    <p className="text-2xl font-bold text-white">{guestStats.kids}</p>
-                </div>
-                <div className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
-                    <p className="text-xs text-zinc-500 uppercase font-semibold">Prestataires</p>
-                    <p className="text-2xl font-bold text-pink-500">{guestStats.providers}</p>
-                </div>
-            </div>
 
-            <Tabs defaultValue="all" className="mt-8" onValueChange={setSelectedListId}>
-                <TabsList className="bg-zinc-900 border border-zinc-800 p-1">
-                    <TabsTrigger value="all" className="data-[state=active]:bg-zinc-800">Tous</TabsTrigger>
-                    {guestLists.map((list) => (
-                        <TabsTrigger key={list.id} value={list.id} className="group flex items-center gap-2 data-[state=active]:bg-zinc-800">
-                            {list.name}
-                            <span className="text-[10px] bg-zinc-800 px-1.5 py-0.5 rounded-full text-zinc-400 group-data-[state=active]:text-white">
-                                {list._count?.guests || 0}
-                            </span>
-                            <Trash
-                                className="h-3 w-3 text-zinc-600 hover:text-red-500 opacity-0 group-hover:opacity-100 transition"
-                                onClick={(e) => {
-                                    e.stopPropagation()
-                                    onDeleteList(list.id, list.name)
-                                }}
-                            />
+                <Tabs defaultValue="all" className="mt-10" onValueChange={setSelectedListId}>
+                    <TabsList className="bg-muted/50 border border-border/60 p-1 rounded-2xl h-auto flex-wrap justify-start">
+                        <TabsTrigger value="all" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-md transition-all px-6 py-2">
+                            Tous
                         </TabsTrigger>
-                    ))}
-                </TabsList>
-            </Tabs>
+                        {guestLists.map((list) => (
+                            <TabsTrigger key={list.id} value={list.id} className="group flex items-center gap-3 rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-md transition-all px-6 py-2">
+                                {list.name}
+                                <span className="text-[10px] bg-muted px-2 py-0.5 rounded-full text-muted-foreground group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white">
+                                    {list._count?.guests || 0}
+                                </span>
+                                <div className="p-1 rounded-full hover:bg-white/20 transition-colors"
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        onDeleteList(list.id, list.name)
+                                    }}
+                                >
+                                    <Trash className="h-3 w-3 text-muted-foreground group-data-[state=active]:text-white/70 hover:text-white" />
+                                </div>
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
+                </Tabs>
 
-            <div className="mt-4 rounded-xl border border-zinc-800 bg-zinc-900/30 overflow-hidden">
-                <Table>
-                    <TableHeader>
-                        <TableRow className="hover:bg-transparent border-zinc-800 bg-zinc-900/50">
-                            <TableHead className="text-zinc-400 font-medium">Nom</TableHead>
-                            <TableHead className="text-zinc-400 font-medium">Relation</TableHead>
-                            <TableHead className="text-zinc-400 font-medium">Catégorie</TableHead>
-                            <TableHead className="w-[100px]"></TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {filteredData.length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={4} className="h-32 text-center text-zinc-500 italic">
-                                    Aucun invité dans cette liste.
-                                </TableCell>
+                <div className="mt-6 rounded-3xl border border-[#e9ded0] bg-white overflow-hidden shadow-sm">
+                    <Table>
+                        <TableHeader className="bg-[#f3ece4]">
+                            <TableRow className="hover:bg-transparent border-[#e9ded0]">
+                                <TableHead className="font-serif text-[#3a2a22] font-bold">Nom</TableHead>
+                                <TableHead className="font-serif text-[#3a2a22] font-bold">Relation</TableHead>
+                                <TableHead className="font-serif text-[#3a2a22] font-bold">Catégorie</TableHead>
+                                <TableHead className="w-[120px]"></TableHead>
                             </TableRow>
-                        ) : (
-                            filteredData.map((guest) => (
-                                <TableRow key={guest.id} className="border-zinc-800 hover:bg-white/5 text-zinc-300 transition-colors">
-                                    <TableCell className="font-medium text-white">{guest.name}</TableCell>
-                                    <TableCell className="text-zinc-400">{guest.relation || "-"}</TableCell>
-                                    <TableCell>
-                                        <Badge variant="outline" className="border-zinc-700 bg-zinc-800/50 text-zinc-300 font-normal">
-                                            {guest.category || "Standard"}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-1">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => onEdit(guest)}
-                                                className="text-zinc-500 hover:text-white hover:bg-zinc-800"
-                                            >
-                                                <Pencil className="h-4 w-4" />
-                                            </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => onDelete(guest.id)}
-                                                className="text-zinc-500 hover:text-red-500 hover:bg-red-500/10"
-                                            >
-                                                <Trash className="h-4 w-4" />
-                                            </Button>
-                                        </div>
+                        </TableHeader>
+                        <TableBody>
+                            {filteredData.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={4} className="h-40 text-center text-muted-foreground italic bg-muted/5">
+                                        Aucun invité dans cette liste.
                                     </TableCell>
                                 </TableRow>
-                            ))
-                        )}
-                    </TableBody>
-                </Table>
+                            ) : (
+                                filteredData.map((guest) => (
+                                    <TableRow key={guest.id} className="border-border/60 hover:bg-muted/20 transition-colors">
+                                        <TableCell className="font-medium text-foreground">{guest.name}</TableCell>
+                                        <TableCell className="text-muted-foreground italic text-sm">{guest.relation || "-"}</TableCell>
+                                        <TableCell>
+                                            <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary font-medium rounded-lg px-2 py-0.5">
+                                                {guest.category || "Standard"}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-1">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => onEdit(guest)}
+                                                    className="text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-full"
+                                                >
+                                                    <Pencil className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => onDelete(guest.id)}
+                                                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
+                                                >
+                                                    <Trash className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
             </div>
         </>
     )

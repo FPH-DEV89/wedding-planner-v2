@@ -94,11 +94,11 @@ export const GuestForm = ({ initialData, guestLists, onSuccess }: GuestFormProps
                                 defaultValue={field.value}
                             >
                                 <FormControl>
-                                    <SelectTrigger className="bg-zinc-950 border-zinc-800">
+                                    <SelectTrigger className="bg-white border-border/40 rounded-xl focus:ring-[#c96d4b]/20 transition-all">
                                         <SelectValue placeholder="Choisir une liste" />
                                     </SelectTrigger>
                                 </FormControl>
-                                <SelectContent className="bg-zinc-950 border-zinc-800">
+                                <SelectContent className="bg-white border-border/40 rounded-xl">
                                     {guestLists.map((list) => (
                                         <SelectItem key={list.id} value={list.id}>
                                             {list.name}
@@ -117,7 +117,7 @@ export const GuestForm = ({ initialData, guestLists, onSuccess }: GuestFormProps
                         <FormItem>
                             <FormLabel>Nom</FormLabel>
                             <FormControl>
-                                <Input disabled={loading} placeholder="Jean Dupont" {...field} className="bg-zinc-950 border-zinc-800" />
+                                <Input disabled={loading} placeholder="Jean Dupont" {...field} className="bg-white border-border/40 rounded-xl focus:ring-[#c96d4b]/20 transition-all" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -131,7 +131,7 @@ export const GuestForm = ({ initialData, guestLists, onSuccess }: GuestFormProps
                             <FormItem>
                                 <FormLabel>Relation</FormLabel>
                                 <FormControl>
-                                    <Input disabled={loading} placeholder="Famille, Ami..." {...field} className="bg-zinc-950 border-zinc-800" />
+                                    <Input disabled={loading} placeholder="Famille, Ami..." {...field} className="bg-white border-border/40 rounded-xl focus:ring-[#c96d4b]/20 transition-all" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -144,14 +144,18 @@ export const GuestForm = ({ initialData, guestLists, onSuccess }: GuestFormProps
                             <FormItem>
                                 <FormLabel>Catégorie</FormLabel>
                                 <FormControl>
-                                    <Input disabled={loading} placeholder="Confirmé, VIP, En attente..." {...field} className="bg-zinc-950 border-zinc-800" />
+                                    <Input disabled={loading} placeholder="Confirmé, VIP, En attente..." {...field} className="bg-white border-border/40 rounded-xl focus:ring-[#c96d4b]/20 transition-all" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                 </div>
-                <Button disabled={loading} className="ml-auto w-full bg-pink-600 hover:bg-pink-700 font-medium" type="submit">
+                <Button
+                    disabled={loading}
+                    className="ml-auto w-full bg-[#c96d4b] hover:bg-[#b05a3a] text-white font-bold h-12 rounded-2xl shadow-lg transition-all hover:shadow-[#c96d4b]/20 active:scale-95"
+                    type="submit"
+                >
                     {initialData ? "Enregistrer les modifications" : "Ajouter l'invité"}
                 </Button>
             </form>

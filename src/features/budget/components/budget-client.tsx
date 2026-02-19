@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+import { Card, CardContent } from "@/components/ui/card"
 import { Vendor } from "@/features/vendors/schema"
 import { Purchase } from "@/features/purchases/schema"
 
@@ -34,70 +35,78 @@ export const BudgetClient = ({ vendors, purchases }: BudgetClientProps) => {
     const grandRemaining = grandTotal - grandPaid
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-10">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-white">Budget Global</h2>
-                    <p className="text-sm text-zinc-400">
+                    <h2 className="text-4xl font-serif font-bold tracking-tight text-primary">Budget Global</h2>
+                    <p className="text-sm text-muted-foreground mt-1">
                         Vue d'ensemble de vos finances pour le mariage.
                     </p>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-                <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-lg">
-                    <p className="text-sm text-zinc-400">Total Budget</p>
-                    <p className="text-2xl font-bold text-white">{grandTotal.toLocaleString()} €</p>
-                    <div className="flex gap-2 mt-2 text-[10px] text-zinc-500">
-                        <span>Vendeurs: {totalVendors}€</span>
-                        <span>Achats: {totalPurchases}€</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <Card className="p-6 border-border/60 rounded-3xl bg-card/50 shadow-sm">
+                    <p className="text-sm text-muted-foreground uppercase tracking-wider font-medium">Total Budget</p>
+                    <p className="text-3xl font-serif font-bold text-foreground mt-2">{grandTotal.toLocaleString()} €</p>
+                    <div className="flex gap-3 mt-4 text-[11px] text-muted-foreground italic border-t border-border pt-4">
+                        <span className="flex items-center gap-1"><div className="w-1 h-1 rounded-full bg-primary" /> Vendeurs: {totalVendors}€</span>
+                        <span className="flex items-center gap-1"><div className="w-1 h-1 rounded-full bg-secondary" /> Achats: {totalPurchases}€</span>
                     </div>
-                </div>
-                <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-lg">
-                    <p className="text-sm text-zinc-400">Total Payé</p>
-                    <p className="text-2xl font-bold text-emerald-500">{grandPaid.toLocaleString()} €</p>
-                </div>
-                <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-lg">
-                    <p className="text-sm text-zinc-400">Reste à payer</p>
-                    <p className="text-2xl font-bold text-orange-500">{grandRemaining.toLocaleString()} €</p>
-                </div>
+                </Card>
+                <Card className="p-6 border-border/60 rounded-3xl bg-card/50 shadow-sm">
+                    <p className="text-sm text-muted-foreground uppercase tracking-wider font-medium">Total Payé</p>
+                    <p className="text-3xl font-serif font-bold text-secondary mt-2">{grandPaid.toLocaleString()} €</p>
+                    <div className="mt-4 border-t border-border pt-4">
+                        <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">
+                            <div
+                                className="bg-secondary h-full transition-all duration-1000"
+                                style={{ width: `${(grandPaid / (grandTotal || 1)) * 100}%` }}
+                            />
+                        </div>
+                    </div>
+                </Card>
+                <Card className="p-6 border-border/60 rounded-3xl bg-card/50 shadow-sm">
+                    <p className="text-sm text-muted-foreground uppercase tracking-wider font-medium">Reste à payer</p>
+                    <p className="text-3xl font-serif font-bold text-primary mt-2">{grandRemaining.toLocaleString()} €</p>
+                </Card>
             </div>
 
-            <Tabs defaultValue="vendors" className="mt-8">
-                <TabsList className="bg-zinc-900 border border-zinc-800">
-                    <TabsTrigger value="vendors" className="data-[state=active]:bg-zinc-800 text-zinc-400 data-[state=active]:text-white">
+            <Tabs defaultValue="vendors" className="mt-10">
+                <TabsList className="bg-muted/50 border border-border/60 p-1 rounded-2xl">
+                    <TabsTrigger value="vendors" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-md transition-all px-6">
                         <Truck className="h-4 w-4 mr-2" /> Prestataires
                     </TabsTrigger>
-                    <TabsTrigger value="purchases" className="data-[state=active]:bg-zinc-800 text-zinc-400 data-[state=active]:text-white">
+                    <TabsTrigger value="purchases" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-md transition-all px-6">
                         <Store className="h-4 w-4 mr-2" /> Achats
                     </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="vendors" className="mt-4">
-                    <div className="rounded-md border border-zinc-800 bg-zinc-900/50">
+                <TabsContent value="vendors" className="mt-6">
+                    <div className="rounded-3xl border border-border/60 overflow-hidden bg-card/50 backdrop-blur-sm shadow-sm text-foreground">
                         <Table>
-                            <TableHeader>
-                                <TableRow className="hover:bg-transparent border-zinc-800">
-                                    <TableHead className="text-zinc-400">Prestataire</TableHead>
-                                    <TableHead className="text-zinc-400">Prix</TableHead>
-                                    <TableHead className="text-zinc-400">Acompte/Payé</TableHead>
-                                    <TableHead className="text-zinc-400">Reste</TableHead>
+                            <TableHeader className="bg-muted/30">
+                                <TableRow className="hover:bg-transparent border-border/60">
+                                    <TableHead className="font-serif text-foreground">Prestataire</TableHead>
+                                    <TableHead className="font-serif text-foreground">Prix</TableHead>
+                                    <TableHead className="font-serif text-foreground">Payé</TableHead>
+                                    <TableHead className="font-serif text-foreground">Reste</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {vendors.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={4} className="h-24 text-center text-zinc-500">
+                                        <TableCell colSpan={4} className="h-32 text-center text-muted-foreground italic">
                                             Aucun prestataire ajouté.
                                         </TableCell>
                                     </TableRow>
                                 ) : (
                                     vendors.map((vendor) => (
-                                        <TableRow key={vendor.id} className="border-zinc-800 hover:bg-white/5 text-zinc-300">
-                                            <TableCell className="font-medium text-white">{vendor.name}</TableCell>
-                                            <TableCell>{vendor.price.toLocaleString()} €</TableCell>
-                                            <TableCell className="text-emerald-500">{vendor.paidAmount.toLocaleString()} €</TableCell>
-                                            <TableCell className="text-orange-500">{(vendor.price - vendor.paidAmount).toLocaleString()} €</TableCell>
+                                        <TableRow key={vendor.id} className="border-border/60 hover:bg-muted/20 transition-colors">
+                                            <TableCell className="font-medium">{vendor.name}</TableCell>
+                                            <TableCell className="font-serif">{vendor.price.toLocaleString()} €</TableCell>
+                                            <TableCell className="text-secondary font-medium">{vendor.paidAmount.toLocaleString()} €</TableCell>
+                                            <TableCell className="text-primary font-bold">{(vendor.price - vendor.paidAmount).toLocaleString()} €</TableCell>
                                         </TableRow>
                                     ))
                                 )}
@@ -106,64 +115,35 @@ export const BudgetClient = ({ vendors, purchases }: BudgetClientProps) => {
                     </div>
                 </TabsContent>
 
-                <TabsContent value="vendors" className="mt-4">
-                    <div className="rounded-md border border-zinc-800 bg-zinc-900/50">
+                <TabsContent value="purchases" className="mt-6">
+                    <div className="rounded-3xl border border-border/60 overflow-hidden bg-card/50 backdrop-blur-sm shadow-sm text-foreground">
                         <Table>
-                            <TableHeader>
-                                <TableRow className="hover:bg-transparent border-zinc-800">
-                                    <TableHead className="text-zinc-400">Prestataire</TableHead>
-                                    <TableHead className="text-zinc-400">Prix</TableHead>
-                                    <TableHead className="text-zinc-400">Acompte/Payé</TableHead>
-                                    <TableHead className="text-zinc-400">Reste</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {vendors.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell colSpan={4} className="h-24 text-center text-zinc-500">
-                                            Aucun prestataire ajouté.
-                                        </TableCell>
-                                    </TableRow>
-                                ) : (
-                                    vendors.map((vendor) => (
-                                        <TableRow key={vendor.id} className="border-zinc-800 hover:bg-white/5 text-zinc-300">
-                                            <TableCell className="font-medium text-white">{vendor.name}</TableCell>
-                                            <TableCell>{vendor.price.toLocaleString()} €</TableCell>
-                                            <TableCell className="text-emerald-500">{vendor.paidAmount.toLocaleString()} €</TableCell>
-                                            <TableCell className="text-orange-500">{(vendor.price - vendor.paidAmount).toLocaleString()} €</TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
-                </TabsContent>
-
-                <TabsContent value="purchases" className="mt-4">
-                    <div className="rounded-md border border-zinc-800 bg-zinc-900/50">
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="hover:bg-transparent border-zinc-800">
-                                    <TableHead className="text-zinc-400">Achat</TableHead>
-                                    <TableHead className="text-zinc-400">Quantité</TableHead>
-                                    <TableHead className="text-zinc-400">Total</TableHead>
-                                    <TableHead className="text-zinc-400">Statut</TableHead>
+                            <TableHeader className="bg-muted/30">
+                                <TableRow className="hover:bg-transparent border-border/60">
+                                    <TableHead className="font-serif text-foreground">Achat</TableHead>
+                                    <TableHead className="font-serif text-foreground">Quantité</TableHead>
+                                    <TableHead className="font-serif text-foreground">Total</TableHead>
+                                    <TableHead className="font-serif text-foreground">Statut</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {purchases.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={4} className="h-24 text-center text-zinc-500">
+                                        <TableCell colSpan={4} className="h-32 text-center text-muted-foreground italic">
                                             Aucun achat enregistré.
                                         </TableCell>
                                     </TableRow>
                                 ) : (
                                     purchases.map((purchase) => (
-                                        <TableRow key={purchase.id} className="border-zinc-800 hover:bg-white/5 text-zinc-300">
-                                            <TableCell className="font-medium text-white">{purchase.type}</TableCell>
+                                        <TableRow key={purchase.id} className="border-border/60 hover:bg-muted/20 transition-colors">
+                                            <TableCell className="font-medium">{purchase.type}</TableCell>
                                             <TableCell>{purchase.quantity}</TableCell>
-                                            <TableCell>{(purchase.price * purchase.quantity).toLocaleString()} €</TableCell>
-                                            <TableCell>{purchase.isPaid ? "Payé" : "À payer"}</TableCell>
+                                            <TableCell className="font-serif">{(purchase.price * purchase.quantity).toLocaleString()} €</TableCell>
+                                            <TableCell>
+                                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${purchase.isPaid ? 'bg-secondary/20 text-secondary' : 'bg-primary/10 text-primary'}`}>
+                                                    {purchase.isPaid ? "Payé" : "À payer"}
+                                                </span>
+                                            </TableCell>
                                         </TableRow>
                                     ))
                                 )}

@@ -94,25 +94,76 @@ export const DashboardOverview = async () => {
     ]
 
     return (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mt-8">
-            {stats.map((stat) => (
-                <Link key={stat.title} href={stat.href}>
-                    <Card className="bg-zinc-900 border-zinc-800 hover:bg-zinc-800/50 transition cursor-pointer">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium text-zinc-400">
-                                {stat.title}
-                            </CardTitle>
-                            <stat.icon className={`h-4 w-4 ${stat.color}`} />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold text-white">{stat.value}</div>
-                            <p className="text-xs text-zinc-500">
-                                {stat.description}
-                            </p>
-                        </CardContent>
-                    </Card>
-                </Link>
-            ))}
+        <div className="flex-1 space-y-10 p-8 pt-6">
+            <div className="flex flex-col gap-2">
+                <h2 className="text-4xl font-serif font-bold tracking-tight text-[#c96d4b]">Tableau de Bord</h2>
+                <p className="text-[#7c6d66] font-medium">
+                    Heureux de vous revoir ! Voici l'état de vos préparatifs pour le grand jour.
+                </p>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                {stats.map((stat) => (
+                    <Link key={stat.title} href={stat.href}>
+                        <Card className="hover:shadow-lg hover:shadow-[#c96d4b]/5 transition-all duration-300 border-[#e9ded0] rounded-3xl overflow-hidden group cursor-pointer bg-white">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-bold text-[#7c6d66] uppercase tracking-wider">
+                                    {stat.title}
+                                </CardTitle>
+                                <div className="p-2 rounded-full bg-[#f3ece4] group-hover:bg-[#c96d4b]/10 transition-colors">
+                                    <stat.icon className={`h-4 w-4 text-[#c96d4b] group-hover:scale-110 transition-transform`} />
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-3xl font-serif font-bold text-[#3a2a22]">{stat.value}</div>
+                                <p className="text-xs text-[#7c6d66] mt-1 font-medium">
+                                    {stat.description}
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                ))}
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 mt-4">
+                <Card className="col-span-4 rounded-3xl border-[#e9ded0] bg-white shadow-sm">
+                    <CardHeader>
+                        <CardTitle className="font-serif text-2xl text-[#c96d4b] font-bold">Aperçu du Budget</CardTitle>
+                    </CardHeader>
+                    <CardContent className="pl-2">
+                        <div className="h-[300px] flex items-center justify-center text-muted-foreground italic bg-muted/20 rounded-2xl border border-dashed border-border m-4">
+                            Graphique du budget (Bientôt disponible en Terracotta)
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card className="col-span-3 rounded-3xl border-[#e9ded0] bg-white shadow-sm">
+                    <CardHeader>
+                        <CardTitle className="font-serif text-2xl text-[#c96d4b] font-bold">Évènements à venir</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-secondary/10 border border-secondary/20 group hover:bg-secondary/20 transition-colors">
+                                <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center text-secondary font-bold font-serif">
+                                    15
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">Dégustation Traiteur</p>
+                                    <p className="text-xs text-muted-foreground italic">Prévu dans 15 jours</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-primary/5 border border-primary/10 group hover:bg-primary/10 transition-colors">
+                                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold font-serif">
+                                    30
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">Essayage Robe / Costume</p>
+                                    <p className="text-xs text-muted-foreground italic">Prévu dans 30 jours</p>
+                                </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     )
 }

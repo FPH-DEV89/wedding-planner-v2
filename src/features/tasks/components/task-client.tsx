@@ -76,32 +76,32 @@ export const TaskClient = ({ initialData }: TaskClientProps) => {
     const getPriorityBadge = (priority: string) => {
         switch (priority) {
             case "HIGH":
-                return <Badge className="bg-red-500/10 text-red-500 border-red-500/20">Haute</Badge>
+                return <Badge className="bg-red-50 text-red-600 border-red-100 font-bold px-2 py-0.5 rounded-lg text-[10px] uppercase tracking-wider">Haute</Badge>
             case "MEDIUM":
-                return <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">Moyenne</Badge>
+                return <Badge className="bg-amber-50 text-amber-600 border-amber-100 font-bold px-2 py-0.5 rounded-lg text-[10px] uppercase tracking-wider">Moyenne</Badge>
             default:
-                return <Badge className="bg-blue-500/10 text-blue-500 border-blue-500/20">Basse</Badge>
+                return <Badge className="bg-blue-50 text-blue-600 border-blue-100 font-bold px-2 py-0.5 rounded-lg text-[10px] uppercase tracking-wider">Basse</Badge>
         }
     }
 
     const getStatusIcon = (status: string) => {
         switch (status) {
             case "DONE":
-                return <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                return <CheckCircle2 className="h-6 w-6 text-secondary fill-secondary/10" />
             case "IN_PROGRESS":
-                return <Clock className="h-5 w-5 text-sky-500" />
+                return <Clock className="h-6 w-6 text-primary animate-pulse" />
             default:
-                return <Circle className="h-5 w-5 text-zinc-500" />
+                return <Circle className="h-6 w-6 text-muted-foreground group-hover:text-primary transition-colors" />
         }
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-white">Tâches</h2>
-                    <p className="text-sm text-zinc-400">
-                        {initialData.filter(t => t.status !== "DONE").length} tâches restantes.
+                    <h2 className="text-4xl font-serif font-extrabold tracking-tight text-[#c96d4b]">Liste des Tâches</h2>
+                    <p className="text-sm text-[#7c6d66] mt-1 font-medium">
+                        {initialData.filter(t => t.status !== "DONE").length} missions à accomplir pour le jour J.
                     </p>
                 </div>
                 <Dialog open={open} onOpenChange={(val) => {
@@ -109,51 +109,58 @@ export const TaskClient = ({ initialData }: TaskClientProps) => {
                     if (!val) setEditingTask(null)
                 }}>
                     <DialogTrigger asChild>
-                        <Button className="bg-orange-600 hover:bg-orange-700">
+                        <Button className="bg-[#c96d4b] hover:bg-[#b05a3a] text-white rounded-2xl shadow-md transition-all hover:scale-105 active:scale-95">
                             <Plus className="mr-2 h-4 w-4" /> Nouvelle tâche
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px] bg-zinc-950 border-zinc-800 text-white">
-                        <DialogHeader>
-                            <DialogTitle>
-                                {editingTask ? "Modifier la tâche" : "Ajouter une tâche"}
-                            </DialogTitle>
-                        </DialogHeader>
-                        <TaskForm
-                            initialData={editingTask}
-                            onSuccess={() => setOpen(false)}
-                        />
+                    <DialogContent className="sm:max-w-[425px] bg-background rounded-3xl border-border/40 shadow-2xl p-0 overflow-hidden">
+                        <div className="p-6 pb-0">
+                            <DialogHeader>
+                                <DialogTitle className="text-2xl font-serif font-bold text-primary">
+                                    {editingTask ? "Modifier la tâche" : "Ajouter une tâche"}
+                                </DialogTitle>
+                            </DialogHeader>
+                        </div>
+                        <div className="p-6">
+                            <TaskForm
+                                initialData={editingTask}
+                                onSuccess={() => setOpen(false)}
+                            />
+                        </div>
                     </DialogContent>
                 </Dialog>
             </div>
 
-            <div className="grid gap-4 mt-8">
+            <div className="grid gap-3 mt-6">
                 {initialData.length === 0 ? (
-                    <div className="text-center py-10 text-zinc-500 border border-dashed border-zinc-800 rounded-lg">
-                        Aucune tâche planifiée.
+                    <div className="text-center py-20 text-muted-foreground border-2 border-dashed border-border/40 rounded-3xl font-serif italic text-lg bg-white/40 backdrop-blur-sm">
+                        Votre liste de tâches est vide pour le moment.
                     </div>
                 ) : (
                     initialData.map((task) => (
                         <Card key={task.id} className={cn(
-                            "bg-zinc-900 border-zinc-800 group hover:border-zinc-700 transition",
-                            task.status === "DONE" && "opacity-60"
+                            "bg-white border-[#e9ded0] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 group overflow-hidden",
+                            task.status === "DONE" && "opacity-60 bg-[#f3ece4]"
                         )}>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 p-4">
-                                <div className="flex items-center gap-4">
-                                    <button onClick={() => onStatusChange(task.id, task.status)}>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 p-5">
+                                <div className="flex items-center gap-5">
+                                    <button
+                                        onClick={() => onStatusChange(task.id, task.status)}
+                                        className="transition-transform active:scale-90"
+                                    >
                                         {getStatusIcon(task.status)}
                                     </button>
                                     <div>
                                         <CardTitle className={cn(
-                                            "text-white text-base",
-                                            task.status === "DONE" && "line-through text-zinc-500"
+                                            "text-lg font-serif font-bold text-[#3a2a22] transition-all",
+                                            task.status === "DONE" && "line-through text-[#7c6d66] italic font-normal"
                                         )}>
                                             {task.title}
                                         </CardTitle>
-                                        <div className="flex items-center gap-3 mt-1">
+                                        <div className="flex items-center gap-4 mt-1.5">
                                             {task.dueDate && (
-                                                <div className="flex items-center text-xs text-zinc-500">
-                                                    <Clock className="mr-1 h-3 w-3" />
+                                                <div className="flex items-center text-[10px] font-bold uppercase tracking-widest text-[#7c6d66] bg-[#f3ece4] px-2 py-0.5 rounded-md">
+                                                    <Clock className="mr-1.5 h-3 w-3 text-[#c96d4b]" />
                                                     {format(new Date(task.dueDate), "d MMM yyyy", { locale: fr })}
                                                 </div>
                                             )}
@@ -161,22 +168,22 @@ export const TaskClient = ({ initialData }: TaskClientProps) => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition">
+                                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <Button
                                         variant="ghost"
                                         size="icon"
                                         onClick={() => onEdit(task)}
-                                        className="text-zinc-400 hover:text-white"
+                                        className="h-10 w-10 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
                                     >
-                                        <Pencil className="h-4 w-4" />
+                                        <Pencil className="h-5 w-5" />
                                     </Button>
                                     <Button
                                         variant="ghost"
                                         size="icon"
                                         onClick={() => onDelete(task.id)}
-                                        className="text-zinc-400 hover:text-red-500"
+                                        className="h-10 w-10 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                                     >
-                                        <Trash className="h-4 w-4" />
+                                        <Trash className="h-5 w-5" />
                                     </Button>
                                 </div>
                             </CardHeader>

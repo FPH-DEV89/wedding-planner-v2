@@ -75,17 +75,20 @@ export const TimelineClient = ({ initialData }: TimelineClientProps) => {
     return (
         <div className="max-w-4xl mx-auto space-y-12 pb-20">
             {/* Header section with wedding feel */}
-            <div className="text-center space-y-4 mb-16">
-                <div className="inline-block p-3 rounded-full bg-pink-500/10 mb-4">
-                    <Heart className="h-8 w-8 text-pink-500 fill-pink-500/20" />
+            <div className="text-center space-y-4 mb-20 animate-in fade-in slide-in-from-top-4 duration-1000">
+                <div className="inline-block p-4 rounded-full bg-primary/10 mb-4 shadow-inner">
+                    <Heart className="h-10 w-10 text-primary fill-primary/20" />
                 </div>
-                <h1 className="text-5xl font-serif text-white tracking-tight italic">
+                <h1 className="text-6xl font-serif text-[#c96d4b] tracking-tight font-extrabold italic">
                     Notre Jour J
                 </h1>
-                <div className="h-px w-24 bg-gradient-to-r from-transparent via-zinc-700 to-transparent mx-auto my-4" />
-                <p className="text-zinc-400 text-lg uppercase tracking-[0.2em] font-light">
-                    Le déroulé de la journée
-                </p>
+                <div className="flex items-center justify-center gap-4 py-2">
+                    <div className="h-px w-16 bg-gradient-to-r from-transparent to-border" />
+                    <p className="text-muted-foreground text-sm uppercase tracking-[0.3em] font-bold">
+                        Le précieux programme
+                    </p>
+                    <div className="h-px w-16 bg-gradient-to-l from-transparent to-border" />
+                </div>
 
                 <div className="pt-8">
                     <Dialog open={open} onOpenChange={(val) => {
@@ -93,82 +96,84 @@ export const TimelineClient = ({ initialData }: TimelineClientProps) => {
                         if (!val) setEditingTask(null)
                     }}>
                         <DialogTrigger asChild>
-                            <Button variant="outline" className="border-zinc-800 hover:bg-white hover:text-black transition-all rounded-full px-8">
+                            <Button className="bg-[#c96d4b] hover:bg-[#b05a3a] text-white rounded-full px-10 h-12 shadow-lg hover:shadow-[#c96d4b]/20 transition-all hover:scale-105 active:scale-95">
                                 <Plus className="mr-2 h-4 w-4" /> Ajouter un moment fort
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px] bg-zinc-950 border-zinc-800 text-white p-6 shadow-2xl">
-                            <DialogHeader>
-                                <DialogTitle className="text-2xl font-serif italic mb-4">
-                                    {editingTask ? "Modifier le moment" : "Nouvel événement"}
-                                </DialogTitle>
-                            </DialogHeader>
-                            <TaskForm
-                                initialData={editingTask}
-                                onSuccess={() => setOpen(false)}
-                                labels={{
-                                    title: "Nom de l'événement",
-                                    titlePlaceholder: "Cérémonie, Photos de groupe...",
-                                    date: "Date",
-                                    submit: "Ajouter au programme"
-                                }}
-                            />
+                        <DialogContent className="sm:max-w-[425px] bg-background rounded-3xl border-border/40 shadow-2xl p-0 overflow-hidden">
+                            <div className="p-6 pb-0">
+                                <DialogHeader>
+                                    <DialogTitle className="text-2xl font-serif font-bold text-[#c96d4b]">
+                                        {editingTask ? "Modifier le moment" : "Nouvel événement"}
+                                    </DialogTitle>
+                                </DialogHeader>
+                            </div>
+                            <div className="p-6">
+                                <TaskForm
+                                    initialData={editingTask}
+                                    onSuccess={() => setOpen(false)}
+                                    labels={{
+                                        title: "Nom de l'événement",
+                                        titlePlaceholder: "Cérémonie, Photos de groupe...",
+                                        date: "Date",
+                                        submit: "Ajouter au programme"
+                                    }}
+                                />
+                            </div>
                         </DialogContent>
                     </Dialog>
                 </div>
             </div>
 
             {/* Timeline Line */}
-            <div className="relative space-y-0 before:absolute before:inset-0 before:left-1/2 before:-translate-x-px before:h-full before:w-[1px] before:bg-gradient-to-b before:from-transparent before:via-zinc-800 before:to-transparent">
+            <div className="relative space-y-0 before:absolute before:inset-0 before:left-1/2 before:-translate-x-px before:h-full before:w-[2px] before:bg-gradient-to-b before:from-transparent before:via-border/60 before:to-transparent">
                 {sortedTasks.length === 0 ? (
-                    <div className="text-center py-20 text-zinc-500 italic bg-zinc-900/20 rounded-3xl border border-dashed border-zinc-800">
+                    <div className="text-center py-20 text-muted-foreground italic bg-white/40 backdrop-blur-sm rounded-3xl border-2 border-dashed border-border/40 font-serif text-xl">
                         Votre programme est en cours de création...
                     </div>
                 ) : (
                     sortedTasks.map((task, index) => {
                         const isEven = index % 2 === 0;
                         return (
-                            <div key={task.id} className="relative flex items-center justify-between md:justify-normal group py-8">
+                            <div key={task.id} className="relative flex items-center justify-between md:justify-normal group py-10">
                                 {/* Content Wrapper */}
                                 <div className={cn(
-                                    "w-[calc(50%-2rem)] flex flex-col",
+                                    "w-[calc(50%-2.5rem)] flex flex-col",
                                     isEven ? "md:mr-auto text-right md:pr-12" : "md:ml-auto md:pl-12 order-2"
                                 )}>
-                                    <div className="space-y-2">
+                                    <div className="space-y-3">
                                         <div className={cn(
-                                            "flex items-center gap-3",
+                                            "flex items-center gap-4",
                                             isEven ? "justify-end" : "justify-start"
                                         )}>
-                                            <div className="p-3 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 group-hover:border-pink-500/50 group-hover:text-pink-500 transition-all shadow-xl">
+                                            <div className="p-4 rounded-2xl bg-white border border-[#e9ded0] text-[#c96d4b] shadow-sm group-hover:bg-[#c96d4b] group-hover:text-white group-hover:scale-110 transition-all duration-300">
                                                 {getEventIcon(task.title)}
                                             </div>
-                                            {!isEven && (
-                                                <time className="text-xl font-light text-white tracking-widest">
-                                                    {task.dueDate ? format(new Date(task.dueDate), "HH:mm") : "--:--"}
-                                                </time>
-                                            )}
-                                            {isEven && (
-                                                <time className="text-xl font-light text-white tracking-widest">
-                                                    {task.dueDate ? format(new Date(task.dueDate), "HH:mm") : "--:--"}
-                                                </time>
+                                            <time className={cn(
+                                                "text-2xl font-serif font-extrabold text-[#3a2a22] tracking-widest",
+                                                !isEven && "order-first mr-2"
+                                            )}>
+                                                {task.dueDate ? format(new Date(task.dueDate), "HH:mm") : "--:--"}
+                                            </time>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-2xl font-serif font-extrabold text-[#3a2a22] group-hover:text-[#c96d4b] transition-colors">
+                                                {task.title}
+                                            </h3>
+                                            {task.description && (
+                                                <p className="text-sm text-muted-foreground font-medium leading-relaxed mt-2 max-w-sm ml-auto mr-0">
+                                                    {task.description}
+                                                </p>
                                             )}
                                         </div>
-                                        <h3 className="text-2xl font-serif text-white group-hover:text-pink-500 transition-colors">
-                                            {task.title}
-                                        </h3>
-                                        {task.description && (
-                                            <p className="text-sm text-zinc-500 font-light leading-relaxed">
-                                                {task.description}
-                                            </p>
-                                        )}
                                         <div className={cn(
-                                            "flex gap-3 pt-2 opacity-0 group-hover:opacity-100 transition-opacity",
+                                            "flex gap-4 pt-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0",
                                             isEven ? "justify-end" : "justify-start"
                                         )}>
-                                            <button onClick={() => onEdit(task)} className="text-[10px] uppercase tracking-widest text-zinc-600 hover:text-white">
+                                            <button onClick={() => onEdit(task)} className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors border-b border-transparent hover:border-primary pb-0.5">
                                                 Modifier
                                             </button>
-                                            <button onClick={() => onDelete(task.id)} className="text-[10px] uppercase tracking-widest text-zinc-600 hover:text-red-500">
+                                            <button onClick={() => onDelete(task.id)} className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-destructive transition-colors border-b border-transparent hover:border-destructive pb-0.5">
                                                 Retirer
                                             </button>
                                         </div>
@@ -176,16 +181,17 @@ export const TimelineClient = ({ initialData }: TimelineClientProps) => {
                                 </div>
 
                                 {/* Center Dot */}
-                                <div className="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-zinc-800 border-[3px] border-zinc-950 z-10 group-hover:bg-pink-500 group-hover:scale-125 transition-all shadow-[0_0_15px_rgba(236,72,153,0)] group-hover:shadow-[0_0_15px_rgba(236,72,153,0.5)]" />
+                                <div className="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-white border-4 border-[#7c6d66]/20 z-10 group-hover:bg-[#c96d4b] group-hover:border-[#c96d4b] group-hover:scale-125 transition-all duration-300 shadow-sm" />
                             </div>
                         )
                     })
                 )}
             </div>
 
-            <div className="text-center pt-20">
-                <p className="text-zinc-600 font-serif italic text-sm">
-                    "Et l'aventure continue..."
+            <div className="text-center pt-24 pb-12">
+                <div className="h-px w-40 bg-gradient-to-r from-transparent via-border to-transparent mx-auto mb-8" />
+                <p className="text-primary font-serif italic text-xl tracking-wide">
+                    "Et c'est ainsi que commence votre toujours..."
                 </p>
             </div>
         </div>

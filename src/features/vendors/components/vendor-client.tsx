@@ -1,6 +1,6 @@
 "use client"
 
-import { Plus, Trash, Pencil, Phone, Mail, User, Info } from "lucide-react"
+import { Plus, Trash, Pencil, Phone, Mail, User, Info, Receipt } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -57,11 +57,11 @@ export const VendorClient = ({ initialData }: VendorClientProps) => {
     const getStatusBadge = (status: string) => {
         switch (status) {
             case "BOOKED":
-                return <Badge className="bg-emerald-500">Réservé</Badge>
+                return <Badge className="bg-secondary/20 text-secondary border-secondary/30 font-bold px-3 py-1 rounded-full uppercase text-[10px] tracking-widest">Réservé</Badge>
             case "CONTACTED":
-                return <Badge className="bg-amber-500 text-black">Contacté</Badge>
+                return <Badge className="bg-primary/20 text-primary border-primary/30 font-bold px-3 py-1 rounded-full uppercase text-[10px] tracking-widest">Contacté</Badge>
             default:
-                return <Badge variant="secondary">En recherche</Badge>
+                return <Badge variant="secondary" className="bg-muted text-muted-foreground font-bold px-3 py-1 rounded-full uppercase text-[10px] tracking-widest">En recherche</Badge>
         }
     }
 
@@ -72,9 +72,9 @@ export const VendorClient = ({ initialData }: VendorClientProps) => {
         <div className="space-y-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-white">Prestataires</h2>
-                    <p className="text-sm text-zinc-400">
-                        Gérez vos contacts et vos contrats.
+                    <h2 className="text-4xl font-serif font-extrabold tracking-tight text-[#c96d4b]">Prestataires</h2>
+                    <p className="text-sm text-[#7c6d66] mt-1">
+                        Gérez vos contacts et vos contrats en toute sérénité.
                     </p>
                 </div>
                 <Dialog open={open} onOpenChange={(val) => {
@@ -82,93 +82,121 @@ export const VendorClient = ({ initialData }: VendorClientProps) => {
                     if (!val) setEditingVendor(null)
                 }}>
                     <DialogTrigger asChild>
-                        <Button className="bg-pink-600 hover:bg-pink-700">
-                            <Plus className="mr-2 h-4 w-4" /> Prestataire
+                        <Button className="bg-[#c96d4b] hover:bg-[#b05a3a] text-white rounded-2xl shadow-md transition-all hover:scale-105 active:scale-95">
+                            <Plus className="mr-2 h-4 w-4" /> Nouveau Prestataire
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[500px] bg-zinc-950 border-zinc-800 text-white">
-                        <DialogHeader>
-                            <DialogTitle>
-                                {editingVendor ? "Modifier le prestataire" : "Ajouter un prestataire"}
-                            </DialogTitle>
-                        </DialogHeader>
-                        <VendorForm
-                            initialData={editingVendor as any}
-                            onSuccess={() => setOpen(false)}
-                        />
+                    <DialogContent className="sm:max-w-[500px] bg-background rounded-3xl border-border/40 shadow-2xl p-0 overflow-hidden">
+                        <div className="p-6 pb-0">
+                            <DialogHeader>
+                                <DialogTitle className="text-2xl font-serif font-bold text-primary">
+                                    {editingVendor ? "Modifier le prestataire" : "Ajouter un prestataire"}
+                                </DialogTitle>
+                            </DialogHeader>
+                        </div>
+                        <div className="p-6">
+                            <VendorForm
+                                initialData={editingVendor as any}
+                                onSuccess={() => setOpen(false)}
+                            />
+                        </div>
                     </DialogContent>
                 </Dialog>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="bg-zinc-900 border-zinc-800">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="bg-white border-[#e9ded0] rounded-3xl shadow-sm overflow-hidden group hover:shadow-md transition-all duration-300">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-zinc-400">Budget Prestataires</CardTitle>
+                        <CardTitle className="text-sm font-bold text-[#7c6d66] uppercase tracking-widest flex items-center gap-2">
+                            <Info className="h-4 w-4 text-[#c96d4b]" /> Budget Prestataires
+                        </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-white">{totalBudget.toLocaleString()} €</div>
-                        <p className="text-xs text-zinc-500 mt-1">Total estimé pour {initialData.length} prestataires</p>
+                        <div className="text-4xl font-serif font-extrabold text-[#3a2a22]">{totalBudget.toLocaleString()} €</div>
+                        <div className="flex items-center gap-2 mt-2">
+                            <div className="h-1.5 w-1.5 rounded-full bg-[#c96d4b]" />
+                            <p className="text-xs text-[#7c6d66] font-medium">Total estimé pour {initialData.length} prestataires</p>
+                        </div>
                     </CardContent>
                 </Card>
-                <Card className="bg-zinc-900 border-zinc-800">
+                <Card className="bg-white border-[#e9ded0] rounded-3xl shadow-sm overflow-hidden group hover:shadow-md transition-all duration-300">
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-zinc-400">Total Payé (Acomptes)</CardTitle>
+                        <CardTitle className="text-sm font-bold text-[#7c6d66] uppercase tracking-widest flex items-center gap-2">
+                            <Receipt className="h-4 w-4 text-[#8c9b84]" /> Total Payé (Acomptes)
+                        </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-emerald-500">{totalPaid.toLocaleString()} €</div>
-                        <p className="text-xs text-zinc-500 mt-1">{((totalPaid / totalBudget || 0) * 100).toFixed(0)}% du budget prestataires</p>
+                        <div className="text-4xl font-serif font-extrabold text-[#8c9b84]">{totalPaid.toLocaleString()} €</div>
+                        <div className="flex items-center gap-2 mt-2">
+                            <div className="h-1.5 flex-1 bg-[#f3ece4] rounded-full overflow-hidden">
+                                <div
+                                    className="h-full bg-[#8c9b84] transition-all duration-500"
+                                    style={{ width: `${Math.min((totalPaid / totalBudget || 0) * 100, 100)}%` }}
+                                />
+                            </div>
+                            <p className="text-xs font-bold text-[#8c9b84]">{((totalPaid / totalBudget || 0) * 100).toFixed(0)}%</p>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
 
-            <div className="rounded-md border border-zinc-800 bg-zinc-900/50 overflow-hidden">
+            <div className="rounded-3xl border border-[#e9ded0] bg-white overflow-hidden shadow-sm">
                 <Table>
                     <TableHeader>
-                        <TableRow className="hover:bg-transparent border-zinc-800 bg-zinc-900">
-                            <TableHead className="text-zinc-400">Nom / Catégorie</TableHead>
-                            <TableHead className="text-zinc-400">Contact</TableHead>
-                            <TableHead className="text-zinc-400">Statut</TableHead>
-                            <TableHead className="text-zinc-400">Prix</TableHead>
-                            <TableHead className="text-zinc-400">Payé</TableHead>
+                        <TableRow className="hover:bg-transparent border-[#e9ded0] bg-[#f3ece4]">
+                            <TableHead className="font-bold text-[#3a2a22]">Nom / Catégorie</TableHead>
+                            <TableHead className="font-bold text-[#3a2a22]">Contact</TableHead>
+                            <TableHead className="font-bold text-[#3a2a22]">Statut</TableHead>
+                            <TableHead className="font-bold text-[#3a2a22] text-right border-r border-[#e9ded0] pr-6">Prix</TableHead>
+                            <TableHead className="font-bold text-[#3a2a22] pl-6">Payé</TableHead>
                             <TableHead className="w-[100px]"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {initialData.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="h-24 text-center text-zinc-500">
+                                <TableCell colSpan={6} className="h-32 text-center text-muted-foreground font-serif italic text-lg">
                                     Aucun prestataire trouvé.
                                 </TableCell>
                             </TableRow>
                         ) : (
                             initialData.map((vendor) => (
-                                <TableRow key={vendor.id} className="border-zinc-800 hover:bg-white/5 text-zinc-300">
+                                <TableRow key={vendor.id} className="border-border/40 hover:bg-white/60 transition-colors group">
                                     <TableCell>
-                                        <div className="font-semibold text-white">{vendor.name}</div>
-                                        <div className="text-xs text-zinc-500">{vendor.category}</div>
+                                        <div className="font-serif font-bold text-lg text-foreground group-hover:text-primary transition-colors">{vendor.name}</div>
+                                        <div className="text-xs text-muted-foreground uppercase tracking-wider font-bold">{vendor.category}</div>
                                     </TableCell>
                                     <TableCell>
-                                        <div className="flex flex-col gap-1 text-xs">
-                                            {vendor.contactName && <div className="flex items-center gap-1"><User className="h-3 w-3" /> {vendor.contactName}</div>}
-                                            {vendor.phone && <div className="flex items-center gap-1"><Phone className="h-3 w-3" /> {vendor.phone}</div>}
-                                            {vendor.email && <div className="flex items-center gap-1"><Mail className="h-3 w-3 text-zinc-600" /> {vendor.email}</div>}
+                                        <div className="flex flex-col gap-1.5 text-xs font-medium">
+                                            {vendor.contactName && <div className="flex items-center gap-2 text-foreground"><User className="h-3 w-3 text-primary" /> {vendor.contactName}</div>}
+                                            {vendor.phone && <div className="flex items-center gap-2 text-muted-foreground"><Phone className="h-3 w-3 text-primary/60" /> {vendor.phone}</div>}
+                                            {vendor.email && <div className="flex items-center gap-2 text-muted-foreground"><Mail className="h-3 w-3 text-primary/60" /> {vendor.email}</div>}
                                         </div>
                                     </TableCell>
-                                    <TableCell>{getStatusBadge(vendor.status)}</TableCell>
-                                    <TableCell className="font-medium text-zinc-200">{vendor.price.toLocaleString()} €</TableCell>
                                     <TableCell>
-                                        <div className="text-emerald-500 font-medium">{vendor.paidAmount.toLocaleString()} €</div>
+                                        <div className="scale-90 origin-left">
+                                            {getStatusBadge(vendor.status)}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="text-right font-serif font-extrabold text-foreground border-r border-border/20 pr-6 text-lg">
+                                        {vendor.price.toLocaleString()} €
+                                    </TableCell>
+                                    <TableCell className="pl-6">
+                                        <div className="text-secondary font-serif font-extrabold text-lg">{vendor.paidAmount.toLocaleString()} €</div>
                                         {vendor.price > vendor.paidAmount && (
-                                            <div className="text-[10px] text-orange-500">Reste: {(vendor.price - vendor.paidAmount).toLocaleString()} €</div>
+                                            <div className="flex items-center gap-1 mt-0.5">
+                                                <div className="h-1 w-1 rounded-full bg-primary animate-pulse" />
+                                                <div className="text-[10px] text-primary font-bold uppercase">Reste: {(vendor.price - vendor.paidAmount).toLocaleString()} €</div>
+                                            </div>
                                         )}
                                     </TableCell>
                                     <TableCell>
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => onEdit(vendor)}
-                                                className="text-zinc-400 hover:text-white"
+                                                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
                                             >
                                                 <Pencil className="h-4 w-4" />
                                             </Button>
@@ -176,7 +204,7 @@ export const VendorClient = ({ initialData }: VendorClientProps) => {
                                                 variant="ghost"
                                                 size="icon"
                                                 onClick={() => onDelete(vendor.id)}
-                                                className="text-zinc-400 hover:text-red-500"
+                                                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                                             >
                                                 <Trash className="h-4 w-4" />
                                             </Button>
