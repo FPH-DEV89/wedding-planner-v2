@@ -1,3 +1,5 @@
+"use client"
+
 import { Plus, Trash, Pencil, LayoutDashboard, Truck, Store } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
