@@ -11,3 +11,12 @@ export const TaskSchema = z.object({
 })
 
 export type TaskFormValues = z.infer<typeof TaskSchema>
+
+export interface Task {
+    id: string
+    title: string
+    description?: string | null
+    dueDate?: Date | null
+    status: "TODO" | "IN_PROGRESS" | "DONE"
+    priority: "LOW" | "MEDIUM" | "HIGH"
+}

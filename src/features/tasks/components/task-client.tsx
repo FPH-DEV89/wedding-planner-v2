@@ -14,9 +14,10 @@ import {
 import { Badge } from "@/components/ui/badge"
 
 import { updateTaskStatus } from "../actions"
+import { Task } from "../schema"
 
 interface TaskClientProps {
-    initialData: any[]
+    initialData: Task[]
 }
 
 export const TaskClient = ({ initialData }: TaskClientProps) => {

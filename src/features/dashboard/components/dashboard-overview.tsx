@@ -22,8 +22,8 @@ export const DashboardOverview = async () => {
         where: { userId: MOCK_USER_ID }
     })
 
-    const totalBudget = budgetItems.reduce((acc: number, item: any) => acc + item.amount, 0)
-    const totalPaid = budgetItems.reduce((acc: number, item: any) => acc + item.paidAmount, 0)
+    const totalBudget = budgetItems.reduce((acc: number, item: { amount: number }) => acc + item.amount, 0)
+    const totalPaid = budgetItems.reduce((acc: number, item: { paidAmount: number }) => acc + item.paidAmount, 0)
     const remaining = totalBudget - totalPaid
 
     const stats = [

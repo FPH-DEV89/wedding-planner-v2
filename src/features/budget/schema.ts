@@ -8,7 +8,7 @@ export const BudgetSchema = z.object({
         message: "Veuillez choisir une catégorie.",
     }),
     amount: z.coerce.number().min(0),
-    paidAmount: z.coerce.number().min(0).default(0),
+    paidAmount: z.coerce.number().min(0).optional(),
 })
 
 export type BudgetFormValues = z.infer<typeof BudgetSchema>

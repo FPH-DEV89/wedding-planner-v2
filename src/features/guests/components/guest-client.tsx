@@ -25,8 +25,17 @@ import { Badge } from "@/components/ui/badge"
 import { GuestForm } from "./guest-form"
 import { deleteGuest } from "../actions"
 
+interface Guest {
+    id: string
+    name: string
+    role?: string | null
+    status: string
+    table?: string | null
+    dietaryRequirements?: string | null
+}
+
 interface GuestClientProps {
-    initialData: any[]
+    initialData: Guest[]
 }
 
 export const GuestClient = ({ initialData }: GuestClientProps) => {

@@ -12,7 +12,7 @@ export async function getTasks() {
             where: { userId: MOCK_USER_ID },
             orderBy: { createdAt: "desc" },
         })
-        return { data: tasks }
+        return { data: tasks as any as Task[] }
     } catch (error) {
         return { error: "Impossible de récupérer les tâches." }
     }
