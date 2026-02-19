@@ -1,5 +1,5 @@
 import { getTasks } from "@/features/tasks/actions"
-import { TaskClient } from "@/features/tasks/components/task-client"
+import { TimelineClient } from "@/features/tasks/components/timeline-client"
 
 export default async function TimelinePage() {
     const tasksResponse = await getTasks()
@@ -8,7 +8,7 @@ export default async function TimelinePage() {
     return (
         <div className="flex-col">
             <div className="flex-1 space-y-4 p-8 pt-6">
-                <TaskClient initialData={tasks} />
+                <TimelineClient initialData={tasks} />
             </div>
         </div>
     )
