@@ -46,9 +46,16 @@ interface TaskFormProps {
         priority: "LOW" | "MEDIUM" | "HIGH"
     } | null
     onSuccess: () => void
+    labels?: {
+        title?: string
+        titlePlaceholder?: string
+        description?: string
+        date?: string
+        submit?: string
+    }
 }
 
-export const TaskForm = ({ initialData, onSuccess }: TaskFormProps) => {
+export const TaskForm = ({ initialData, onSuccess, labels }: TaskFormProps) => {
     const [loading, setLoading] = useState(false)
 
     const form = useForm<TaskFormValues>({
@@ -95,9 +102,9 @@ export const TaskForm = ({ initialData, onSuccess }: TaskFormProps) => {
                     name="title"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Titre de la tâche</FormLabel>
+                            <FormLabel>{labels?.title || "Titre de la tâche"}</FormLabel>
                             <FormControl>
-                                <Input disabled={loading} placeholder="Réserver le traiteur..." {...field} />
+                                <Input disabled={loading} placeholder={labels?.titlePlaceholder || "Réserver le traiteur..."} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -108,7 +115,7 @@ export const TaskForm = ({ initialData, onSuccess }: TaskFormProps) => {
                     name="description"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Description (optionnel)</FormLabel>
+                            <FormLabel>{labels?.description || "Description (optionnel)"}</FormLabel>
                             <FormControl>
                                 <Input disabled={loading} placeholder="Détails, contacts..." {...field} />
                             </FormControl>
@@ -121,7 +128,7 @@ export const TaskForm = ({ initialData, onSuccess }: TaskFormProps) => {
                     name="dueDate"
                     render={({ field }) => (
                         <FormItem className="flex flex-col">
-                            <FormLabel>Date d'échéance</FormLabel>
+                            <FormLabel>{labels?.date || "Date d'échéance"}</FormLabel>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <FormControl>
@@ -212,7 +219,7 @@ export const TaskForm = ({ initialData, onSuccess }: TaskFormProps) => {
                     />
                 </div>
                 <Button disabled={loading} className="ml-auto w-full bg-blue-600 hover:bg-blue-700" type="submit">
-                    {initialData ? "Enregistrer les modifications" : "Ajouter la tâche"}
+                    {initialData ? "Enregistrer les modifications" : (labels?.submit || "Ajouter la tâche")}
                 </Button>
             </form>
         </Form>

@@ -99,6 +99,12 @@ export const TimelineClient = ({ initialData }: TimelineClientProps) => {
                         <TaskForm
                             initialData={editingTask}
                             onSuccess={() => setOpen(false)}
+                            labels={{
+                                title: "Nom de l'événement",
+                                titlePlaceholder: "Cérémonie, Vin d'honneur...",
+                                date: "Heure et Date",
+                                submit: "Ajouter à la timeline"
+                            }}
                         />
                     </DialogContent>
                 </Dialog>
