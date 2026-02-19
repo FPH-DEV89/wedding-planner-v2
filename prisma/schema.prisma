@@ -16,24 +16,37 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  guestLists    GuestList[]
   guests        Guest[]
   budgetItems   BudgetItem[]
+  vendors       Vendor[]
+  purchases     Purchase[]
   tasks         Task[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
 
+model GuestList {
+  id        String   @id @default(cuid())
+  name      String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guests    Guest[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Guest {
-  id               String   @id @default(cuid())
+  id               String    @id @default(cuid())
   name             String
-  role             String?  // Ex: Famille, Ami, Témoin
-  status           String   @default("PENDING") // PENDING, CONFIRMED, REJECTED
-  table            String?
-  dietaryRequirements String?
+  role             String?   // Ex: Famille, Ami, Témoin
+  status           String    @default("PENDING") // PENDING, CONFIRMED, REJECTED
+  listId           String?
+  guestList        GuestList? @relation(fields: [listId], references: [id], onDelete: SetNull)
   userId           String
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }
 
 model BudgetItem {
@@ -42,6 +55,35 @@ model BudgetItem {
   category    String
   amount      Float
   paidAmount  Float    @default(0)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Vendor {
+  id          String   @id @default(cuid())
+  name        String
+  category    String   // Traiteur, Photographe, etc.
+  contactName String?
+  email       String?
+  phone       String?
+  status      String   @default("RESEARCH") // RESEARCH, CONTACTED, BOOKED
+  price       Float    @default(0)
+  paidAmount  Float    @default(0)
+  notes       String?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Purchase {
+  id          String   @id @default(cuid())
+  name        String
+  price       Float    @default(0)
+  isPaid      Boolean  @default(false)
+  link        String?
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())

@@ -41,6 +41,42 @@ export async function createTask(values: TaskFormValues) {
     }
 }
 
+export async function updateTask(id: string, values: TaskFormValues) {
+    const validatedFields = TaskSchema.safeParse(values)
+
+    if (!validatedFields.success) {
+        return { error: "Champs invalides." }
+    }
+
+    try {
+        await prisma.task.update({
+            where: { id },
+            data: {
+                ...validatedFields.data,
+            },
+        })
+
+        revalidatePath("/tasks")
+        revalidatePath("/dashboard")
+        return { success: "Tâche mise à jour !" }
+    } catch (error) {
+        return { error: "Erreur lors de la modification." }
+    }
+}
+
+export async function deleteTask(id: string) {
+    try {
+        await prisma.task.delete({
+            where: { id },
+        })
+        revalidatePath("/tasks")
+        revalidatePath("/dashboard")
+        return { success: "Tâche supprimée !" }
+    } catch (error) {
+        return { error: "Erreur lors de la suppression." }
+    }
+}
+
 export async function updateTaskStatus(id: string, status: "TODO" | "IN_PROGRESS" | "DONE") {
     try {
         await prisma.task.update({

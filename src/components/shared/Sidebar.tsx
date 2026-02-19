@@ -10,7 +10,9 @@ import {
     CheckSquare,
     Calendar,
     Settings,
-    Heart
+    Heart,
+    Store,
+    Truck
 } from "lucide-react"
 
 const routes = [
@@ -31,6 +33,18 @@ const routes = [
         icon: Receipt,
         href: "/budget",
         color: "text-emerald-500",
+    },
+    {
+        label: "Prestataires",
+        icon: Truck,
+        href: "/vendors",
+        color: "text-blue-500",
+    },
+    {
+        label: "Achats",
+        icon: Store,
+        href: "/purchases",
+        color: "text-amber-500",
     },
     {
         label: "Tâches",

@@ -6,8 +6,7 @@ export const GuestSchema = z.object({
     }),
     role: z.string().optional(),
     status: z.enum(["PENDING", "CONFIRMED", "REJECTED"]),
-    table: z.string().optional(),
-    dietaryRequirements: z.string().optional(),
+    listId: z.string().optional(),
 })
 
 export type GuestFormValues = z.infer<typeof GuestSchema>

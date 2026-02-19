@@ -24,7 +24,18 @@ import {
 } from "@/components/ui/select"
 
 import { BudgetSchema, BudgetFormValues } from "../schema"
-import { createBudgetItem } from "../actions"
+import { createBudgetItem, updateBudgetItem } from "../actions"
+
+interface BudgetFormProps {
+    initialData?: {
+        id: string
+        name: string
+        category: string
+        amount: number
+        paidAmount: number
+    } | null
+    onSuccess: () => void
+}
 
 const categories = [
     "Lieu",
@@ -38,29 +49,36 @@ const categories = [
     "Autre"
 ]
 
-export const BudgetForm = () => {
+export const BudgetForm = ({ initialData, onSuccess }: BudgetFormProps) => {
     const [loading, setLoading] = useState(false)
 
     const form = useForm<BudgetFormValues>({
         resolver: zodResolver(BudgetSchema) as any,
         defaultValues: {
-            name: "",
-            category: "",
-            amount: 0,
-            paidAmount: 0,
+            name: initialData?.name || "",
+            category: initialData?.category || "",
+            amount: initialData?.amount || 0,
+            paidAmount: initialData?.paidAmount || 0,
         },
     })
 
     const onSubmit = async (values: BudgetFormValues) => {
         try {
             setLoading(true)
-            const response = await createBudgetItem(values)
+            let response
+
+            if (initialData) {
+                response = await updateBudgetItem(initialData.id, values)
+            } else {
+                response = await createBudgetItem(values)
+            }
 
             if (response.error) {
                 toast.error(response.error)
             } else {
                 toast.success(response.success)
                 form.reset()
+                onSuccess()
             }
         } catch (error) {
             toast.error("Un problème est survenu.")
@@ -141,8 +159,8 @@ export const BudgetForm = () => {
                         )}
                     />
                 </div>
-                <Button disabled={loading} className="ml-auto w-full" type="submit">
-                    Ajouter la dépense
+                <Button disabled={loading} className="ml-auto w-full bg-emerald-600 hover:bg-emerald-700" type="submit">
+                    {initialData ? "Enregistrer les modifications" : "Ajouter la dépense"}
                 </Button>
             </form>
         </Form>

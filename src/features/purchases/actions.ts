@@ -1,77 +1,80 @@
 "use server"
 
 import prisma from "@/lib/prisma"
-import { BudgetSchema, BudgetFormValues } from "./schema"
+import { PurchaseSchema, PurchaseFormValues } from "./schema"
 import { revalidatePath } from "next/cache"
 
 const MOCK_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
 
-export async function getBudgetItems() {
+export async function getPurchases() {
     try {
-        const items = await prisma.budgetItem.findMany({
+        const purchases = await prisma.purchase.findMany({
             where: { userId: MOCK_USER_ID },
             orderBy: { createdAt: "desc" },
         })
-        return { data: items }
+        return { data: purchases }
     } catch (error) {
-        return { error: "Impossible de récupérer le budget." }
+        return { error: "Impossible de récupérer les achats." }
     }
 }
 
-export async function createBudgetItem(values: BudgetFormValues) {
-    const validatedFields = BudgetSchema.safeParse(values)
+export async function createPurchase(values: PurchaseFormValues) {
+    const validatedFields = PurchaseSchema.safeParse(values)
 
     if (!validatedFields.success) {
         return { error: "Champs invalides." }
     }
 
     try {
-        const item = await prisma.budgetItem.create({
+        const purchase = await prisma.purchase.create({
             data: {
                 ...validatedFields.data,
                 userId: MOCK_USER_ID,
             },
         })
 
+        revalidatePath("/purchases")
         revalidatePath("/budget")
         revalidatePath("/dashboard")
-        return { success: "Dépense ajoutée !", data: item }
+        return { success: "Achat ajouté !", data: purchase }
     } catch (error) {
         return { error: "Erreur lors de l'ajout." }
     }
 }
 
-export async function updateBudgetItem(id: string, values: BudgetFormValues) {
-    const validatedFields = BudgetSchema.safeParse(values)
+export async function updatePurchase(id: string, values: PurchaseFormValues) {
+    const validatedFields = PurchaseSchema.safeParse(values)
 
     if (!validatedFields.success) {
         return { error: "Champs invalides." }
     }
 
     try {
-        await prisma.budgetItem.update({
+        await prisma.purchase.update({
             where: { id },
             data: {
                 ...validatedFields.data,
             },
         })
 
+        revalidatePath("/purchases")
         revalidatePath("/budget")
         revalidatePath("/dashboard")
-        return { success: "Dépense mise à jour !" }
+        return { success: "Achat mis à jour !" }
     } catch (error) {
         return { error: "Erreur lors de la modification." }
     }
 }
 
-export async function deleteBudgetItem(id: string) {
+export async function deletePurchase(id: string) {
     try {
-        await prisma.budgetItem.delete({
+        await prisma.purchase.delete({
             where: { id },
         })
+        revalidatePath("/purchases")
         revalidatePath("/budget")
         revalidatePath("/dashboard")
-        return { success: "Dépense supprimée !" }
+        return { success: "Achat supprimé !" }
     } catch (error) {
         return { error: "Erreur lors de la suppression." }
     }

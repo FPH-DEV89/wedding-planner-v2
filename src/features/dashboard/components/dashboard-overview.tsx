@@ -22,8 +22,25 @@ export const DashboardOverview = async () => {
         where: { userId: MOCK_USER_ID }
     })
 
-    const totalBudget = budgetItems.reduce((acc: number, item: { amount: number }) => acc + item.amount, 0)
-    const totalPaid = budgetItems.reduce((acc: number, item: { paidAmount: number }) => acc + item.paidAmount, 0)
+    const vendors = await prisma.vendor.findMany({
+        where: { userId: MOCK_USER_ID }
+    })
+
+    const purchases = await prisma.purchase.findMany({
+        where: { userId: MOCK_USER_ID }
+    })
+
+    const totalBudgetItems = budgetItems.reduce((acc: number, item: { amount: number }) => acc + item.amount, 0)
+    const paidBudgetItems = budgetItems.reduce((acc: number, item: { paidAmount: number }) => acc + item.paidAmount, 0)
+
+    const totalVendors = vendors.reduce((acc: number, v: { price: number }) => acc + v.price, 0)
+    const paidVendors = vendors.reduce((acc: number, v: { paidAmount: number }) => acc + v.paidAmount, 0)
+
+    const totalPurchases = purchases.reduce((acc: number, p: { price: number }) => acc + p.price, 0)
+    const paidPurchases = purchases.reduce((acc: number, p: { isPaid: boolean, price: number }) => acc + (p.isPaid ? p.price : 0), 0)
+
+    const totalBudget = totalBudgetItems + totalVendors + totalPurchases
+    const totalPaid = paidBudgetItems + paidVendors + paidPurchases
     const remaining = totalBudget - totalPaid
 
     const stats = [
@@ -37,14 +54,14 @@ export const DashboardOverview = async () => {
         {
             title: "Budget Total",
             value: `${totalBudget.toLocaleString('fr-FR')} €`,
-            description: "Montant total prévu",
+            description: "Items + Prestataires + Achats",
             icon: CreditCard,
             color: "text-emerald-500"
         },
         {
-            title: "Reste à payer",
+            title: "Restant à financer",
             value: `${remaining.toLocaleString('fr-FR')} €`,
-            description: "Montant restant",
+            description: "Montant total restant",
             icon: Clock,
             color: "text-orange-500"
         },
