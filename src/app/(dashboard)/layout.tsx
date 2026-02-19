@@ -16,9 +16,7 @@ const DashboardLayout = ({
             </div>
             <main className="md:pl-72">
                 <Navbar />
-                <AnimatePresence mode="wait">
-                    {children}
-                </AnimatePresence>
+                {children}
             </main>
         </div>
     )
