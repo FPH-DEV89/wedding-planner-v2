@@ -1,7 +1,7 @@
 "use server"
 
 import prisma from "@/lib/prisma"
-import { TaskSchema, TaskFormValues } from "./schema"
+import { TaskSchema, TaskFormValues, Task } from "./schema"
 import { revalidatePath } from "next/cache"
 
 const MOCK_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
