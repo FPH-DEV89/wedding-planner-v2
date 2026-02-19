@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,83 +8,83 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?      @unique
   emailVerified DateTime?
   image         String?
-  guestLists    GuestList[]
-  guests        Guest[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   budgetItems   BudgetItem[]
-  vendors       Vendor[]
+  guests        Guest[]
+  guestLists    GuestList[]
   purchases     Purchase[]
   tasks         Task[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  vendors       Vendor[]
 }
 
 model GuestList {
   id        String   @id @default(cuid())
   name      String
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  guests    Guest[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  guests    Guest[]
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Guest {
-  id               String    @id @default(cuid())
-  name             String
-  role             String?   // Ex: Famille, Ami, Témoin
-  status           String    @default("PENDING") // PENDING, CONFIRMED, REJECTED
-  listId           String?
-  guestList        GuestList? @relation(fields: [listId], references: [id], onDelete: SetNull)
-  userId           String
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id        String     @id @default(cuid())
+  name      String
+  role      String?
+  status    String     @default("PENDING")
+  userId    String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  listId    String?
+  guestList GuestList? @relation(fields: [listId], references: [id])
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model BudgetItem {
-  id          String   @id @default(cuid())
-  name        String
-  category    String
-  amount      Float
-  paidAmount  Float    @default(0)
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  name       String
+  category   String
+  amount     Float
+  paidAmount Float    @default(0)
+  userId     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Vendor {
   id          String   @id @default(cuid())
   name        String
-  category    String   // Traiteur, Photographe, etc.
+  category    String
   contactName String?
   email       String?
   phone       String?
-  status      String   @default("RESEARCH") // RESEARCH, CONTACTED, BOOKED
+  status      String   @default("RESEARCH")
   price       Float    @default(0)
   paidAmount  Float    @default(0)
   notes       String?
   userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Purchase {
-  id          String   @id @default(cuid())
-  name        String
-  price       Float    @default(0)
-  isPaid      Boolean  @default(false)
-  link        String?
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  name      String
+  price     Float    @default(0)
+  isPaid    Boolean  @default(false)
+  link      String?
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Task {
@@ -95,10 +92,10 @@ model Task {
   title       String
   description String?
   dueDate     DateTime?
-  status      String    @default("TODO") // TODO, IN_PROGRESS, DONE
-  priority    String    @default("MEDIUM") // LOW, MEDIUM, HIGH
+  status      String    @default("TODO")
+  priority    String    @default("MEDIUM")
   userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
