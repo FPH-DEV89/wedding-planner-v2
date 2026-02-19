@@ -54,8 +54,8 @@ export const PurchaseClient = ({ initialData }: PurchaseClientProps) => {
         }
     }
 
-    const totalBudget = initialData.reduce((acc, p) => acc + p.price, 0)
-    const totalPaid = initialData.reduce((acc, p) => acc + (p.isPaid ? p.price : 0), 0)
+    const totalBudget = initialData.reduce((acc, p) => acc + (p.price * p.quantity), 0)
+    const totalPaid = initialData.reduce((acc, p) => acc + (p.isPaid ? (p.price * p.quantity) : 0), 0)
 
     return (
         <div className="space-y-8">
@@ -104,8 +104,10 @@ export const PurchaseClient = ({ initialData }: PurchaseClientProps) => {
                 <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent border-zinc-800">
-                            <TableHead className="text-zinc-400">Produit</TableHead>
-                            <TableHead className="text-zinc-400">Prix</TableHead>
+                            <TableHead className="text-zinc-400">Type</TableHead>
+                            <TableHead className="text-zinc-400">Quantité</TableHead>
+                            <TableHead className="text-zinc-400">Prix unit.</TableHead>
+                            <TableHead className="text-zinc-400">Total</TableHead>
                             <TableHead className="text-zinc-400">Statut</TableHead>
                             <TableHead className="w-[100px]"></TableHead>
                         </TableRow>
@@ -113,7 +115,7 @@ export const PurchaseClient = ({ initialData }: PurchaseClientProps) => {
                     <TableBody>
                         {initialData.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={4} className="h-24 text-center text-zinc-500">
+                                <TableCell colSpan={6} className="h-24 text-center text-zinc-500">
                                     Aucun achat trouvé.
                                 </TableCell>
                             </TableRow>
@@ -122,7 +124,7 @@ export const PurchaseClient = ({ initialData }: PurchaseClientProps) => {
                                 <TableRow key={purchase.id} className="border-zinc-800 hover:bg-white/5 text-zinc-300">
                                     <TableCell>
                                         <div className="flex items-center gap-2">
-                                            <span className="font-medium text-white">{purchase.name}</span>
+                                            <span className="font-medium text-white">{purchase.type}</span>
                                             {purchase.link && (
                                                 <a
                                                     href={purchase.link}
@@ -135,7 +137,9 @@ export const PurchaseClient = ({ initialData }: PurchaseClientProps) => {
                                             )}
                                         </div>
                                     </TableCell>
-                                    <TableCell className="text-zinc-200">{purchase.price.toLocaleString()} €</TableCell>
+                                    <TableCell>{purchase.quantity}</TableCell>
+                                    <TableCell className="text-zinc-400">{purchase.price.toLocaleString()} €</TableCell>
+                                    <TableCell className="text-zinc-200 font-semibold">{(purchase.price * purchase.quantity).toLocaleString()} €</TableCell>
                                     <TableCell>
                                         {purchase.isPaid ? (
                                             <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">Payé</Badge>

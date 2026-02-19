@@ -24,8 +24,9 @@ import { createPurchase, updatePurchase } from "../actions"
 interface PurchaseFormProps {
     initialData?: {
         id: string
-        name: string
+        type: string
         price: number
+        quantity: number
         isPaid: boolean
         link?: string | null
     } | null
@@ -38,8 +39,9 @@ export const PurchaseForm = ({ initialData, onSuccess }: PurchaseFormProps) => {
     const form = useForm<PurchaseFormValues>({
         resolver: zodResolver(PurchaseSchema) as any,
         defaultValues: {
-            name: initialData?.name || "",
+            type: initialData?.type || "",
             price: initialData?.price || 0,
+            quantity: initialData?.quantity || 1,
             isPaid: initialData?.isPaid || false,
             link: initialData?.link || "",
         },
@@ -75,10 +77,10 @@ export const PurchaseForm = ({ initialData, onSuccess }: PurchaseFormProps) => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full">
                 <FormField
                     control={form.control}
-                    name="name"
+                    name="type"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Nom de l'achat</FormLabel>
+                            <FormLabel>Type d'achat</FormLabel>
                             <FormControl>
                                 <Input disabled={loading} placeholder="Alliances, Déco table, Confettis..." {...field} />
                             </FormControl>
@@ -86,19 +88,34 @@ export const PurchaseForm = ({ initialData, onSuccess }: PurchaseFormProps) => {
                         </FormItem>
                     )}
                 />
-                <FormField
-                    control={form.control}
-                    name="price"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Prix (€)</FormLabel>
-                            <FormControl>
-                                <Input type="number" disabled={loading} {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                        control={form.control}
+                        name="quantity"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Quantité</FormLabel>
+                                <FormControl>
+                                    <Input type="number" disabled={loading} {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="price"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Prix unitaire (€)</FormLabel>
+                                <FormControl>
+                                    <Input type="number" disabled={loading} {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
                 <FormField
                     control={form.control}
                     name="link"

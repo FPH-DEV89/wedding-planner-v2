@@ -77,8 +77,9 @@ model Vendor {
 
 model Purchase {
   id        String   @id @default(cuid())
-  name      String
+  type      String
   price     Float    @default(0)
+  quantity  Int      @default(1)
   isPaid    Boolean  @default(false)
   link      String?
   userId    String
