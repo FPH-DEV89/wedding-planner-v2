@@ -36,10 +36,6 @@ export const DashboardOverview = async () => {
         }
     })
 
-    const budgetItems = await prisma.budgetItem.findMany({
-        where: { userId: MOCK_USER_ID }
-    })
-
     const vendors = await prisma.vendor.findMany({
         where: { userId: MOCK_USER_ID }
     })
@@ -48,17 +44,14 @@ export const DashboardOverview = async () => {
         where: { userId: MOCK_USER_ID }
     })
 
-    const totalBudgetItems = budgetItems.reduce((acc: number, item: { amount: number }) => acc + item.amount, 0)
-    const paidBudgetItems = budgetItems.reduce((acc: number, item: { paidAmount: number }) => acc + item.paidAmount, 0)
-
     const totalVendors = vendors.reduce((acc: number, v: { price: number }) => acc + v.price, 0)
     const paidVendors = vendors.reduce((acc: number, v: { paidAmount: number }) => acc + v.paidAmount, 0)
 
     const totalPurchases = purchases.reduce((acc: number, p: { price: number, quantity: number }) => acc + (p.price * p.quantity), 0)
     const paidPurchases = purchases.reduce((acc: number, p: { isPaid: boolean, price: number, quantity: number }) => acc + (p.isPaid ? (p.price * p.quantity) : 0), 0)
 
-    const totalBudget = totalBudgetItems + totalVendors + totalPurchases
-    const totalPaid = paidBudgetItems + paidVendors + paidPurchases
+    const totalBudget = totalVendors + totalPurchases
+    const totalPaid = paidVendors + paidPurchases
     const remaining = totalBudget - totalPaid
 
     const now = new Date()
@@ -77,7 +70,7 @@ export const DashboardOverview = async () => {
         {
             title: "Budget Total",
             value: `${totalBudget.toLocaleString('fr-FR')} €`,
-            description: "Dépenses + Prestataires + Achats",
+            description: "Prestataires + Achats",
             icon: CreditCard,
             color: "text-emerald-500",
             href: "/budget"
