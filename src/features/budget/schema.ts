@@ -11,4 +11,9 @@ export const BudgetSchema = z.object({
     paidAmount: z.coerce.number().min(0).optional(),
 })
 
-export type BudgetFormValues = z.infer<typeof BudgetSchema>
+export type BudgetFormValues = {
+    name: string;
+    category: string;
+    amount: number;
+    paidAmount?: number;
+}

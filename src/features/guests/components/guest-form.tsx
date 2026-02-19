@@ -30,7 +30,7 @@ export const GuestForm = () => {
     const [loading, setLoading] = useState(false)
 
     const form = useForm<GuestFormValues>({
-        resolver: zodResolver(GuestSchema),
+        resolver: zodResolver(GuestSchema) as any,
         defaultValues: {
             name: "",
             role: "",

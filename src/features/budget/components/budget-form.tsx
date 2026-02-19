@@ -42,7 +42,7 @@ export const BudgetForm = () => {
     const [loading, setLoading] = useState(false)
 
     const form = useForm<BudgetFormValues>({
-        resolver: zodResolver(BudgetSchema),
+        resolver: zodResolver(BudgetSchema) as any,
         defaultValues: {
             name: "",
             category: "",
