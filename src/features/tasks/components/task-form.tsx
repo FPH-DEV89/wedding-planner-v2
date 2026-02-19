@@ -58,26 +58,44 @@ interface TaskFormProps {
 export const TaskForm = ({ initialData, onSuccess, labels }: TaskFormProps) => {
     const [loading, setLoading] = useState(false)
 
-    const form = useForm<TaskFormValues>({
+    const form = useForm<TaskFormValues & { time?: string }>({
         resolver: zodResolver(TaskSchema) as any,
         defaultValues: {
             title: initialData?.title || "",
             description: initialData?.description || "",
-            dueDate: initialData?.dueDate || undefined,
+            dueDate: initialData?.dueDate ? new Date(initialData.dueDate) : undefined,
             status: initialData?.status || "TODO",
             priority: initialData?.priority || "MEDIUM",
+            time: initialData?.dueDate ? format(new Date(initialData.dueDate), "HH:mm") : "12:00",
         },
     })
 
-    const onSubmit = async (values: TaskFormValues) => {
+    const onSubmit = async (values: TaskFormValues & { time?: string }) => {
         try {
             setLoading(true)
+
+            // Merge date and time
+            let finalDate = values.dueDate;
+            if (finalDate && values.time) {
+                const [hours, minutes] = values.time.split(":").map(Number);
+                finalDate = new Date(finalDate);
+                finalDate.setHours(hours);
+                finalDate.setMinutes(minutes);
+            }
+
+            const payload = {
+                ...values,
+                dueDate: finalDate
+            };
+
+            delete (payload as any).time;
+
             let response
 
             if (initialData) {
-                response = await updateTask(initialData.id, values)
+                response = await updateTask(initialData.id, payload)
             } else {
-                response = await createTask(values)
+                response = await createTask(payload)
             }
 
             if (response.error) {
@@ -123,47 +141,67 @@ export const TaskForm = ({ initialData, onSuccess, labels }: TaskFormProps) => {
                         </FormItem>
                     )}
                 />
-                <FormField
-                    control={form.control}
-                    name="dueDate"
-                    render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                            <FormLabel>{labels?.date || "Date d'échéance"}</FormLabel>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <FormControl>
-                                        <Button
-                                            variant={"outline"}
-                                            className={cn(
-                                                "w-full pl-3 text-left font-normal border-zinc-800 bg-zinc-950 text-white",
-                                                !field.value && "text-muted-foreground"
-                                            )}
-                                        >
-                                            {field.value ? (
-                                                format(field.value, "PPP", { locale: fr })
-                                            ) : (
-                                                <span>Choisir une date</span>
-                                            )}
-                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                        </Button>
-                                    </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0 bg-zinc-950 border-zinc-800" align="start">
-                                    <Calendar
-                                        mode="single"
-                                        selected={field.value}
-                                        onSelect={field.onChange}
-                                        disabled={(date) =>
-                                            date < new Date(new Date().setHours(0, 0, 0, 0))
-                                        }
-                                        initialFocus
+                <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                        control={form.control}
+                        name="dueDate"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-col">
+                                <FormLabel>{labels?.date || "Date"}</FormLabel>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <FormControl>
+                                            <Button
+                                                variant={"outline"}
+                                                className={cn(
+                                                    "w-full pl-3 text-left font-normal border-zinc-800 bg-zinc-950 text-white",
+                                                    !field.value && "text-muted-foreground"
+                                                )}
+                                            >
+                                                {field.value ? (
+                                                    format(field.value, "PPP", { locale: fr })
+                                                ) : (
+                                                    <span>Choisir une date</span>
+                                                )}
+                                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                            </Button>
+                                        </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0 bg-zinc-950 border-zinc-800" align="start">
+                                        <Calendar
+                                            mode="single"
+                                            selected={field.value}
+                                            onSelect={field.onChange}
+                                            disabled={(date) =>
+                                                date < new Date(new Date().setHours(0, 0, 0, 0))
+                                            }
+                                            initialFocus
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="time"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-col">
+                                <FormLabel>Heure {labels?.submit && "(Timeline)"}</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        type="time"
+                                        disabled={loading}
+                                        {...field}
+                                        className="border-zinc-800 bg-zinc-950 text-white"
                                     />
-                                </PopoverContent>
-                            </Popover>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                     <FormField
                         control={form.control}
@@ -218,7 +256,7 @@ export const TaskForm = ({ initialData, onSuccess, labels }: TaskFormProps) => {
                         )}
                     />
                 </div>
-                <Button disabled={loading} className="ml-auto w-full bg-blue-600 hover:bg-blue-700" type="submit">
+                <Button disabled={loading} className="ml-auto w-full bg-pink-600 hover:bg-pink-700" type="submit">
                     {initialData ? "Enregistrer les modifications" : (labels?.submit || "Ajouter la tâche")}
                 </Button>
             </form>

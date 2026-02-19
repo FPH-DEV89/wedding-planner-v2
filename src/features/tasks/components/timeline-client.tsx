@@ -1,6 +1,6 @@
 "use client"
 
-import { Plus, CheckCircle2, Circle, Clock, Pencil, Trash } from "lucide-react"
+import { Plus, Camera, Utensils, GlassWater, Music, Heart, Car, Milestone, Pencil, Trash } from "lucide-react"
 import { toast } from "sonner"
 import { useState } from "react"
 import { format } from "date-fns"
@@ -61,90 +61,132 @@ export const TimelineClient = ({ initialData }: TimelineClientProps) => {
         }
     }
 
-    const getStatusIcon = (status: string) => {
-        switch (status) {
-            case "DONE":
-                return <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-            case "IN_PROGRESS":
-                return <Clock className="h-5 w-5 text-sky-500" />
-            default:
-                return <Circle className="h-5 w-5 text-zinc-500" />
-        }
+    const getEventIcon = (title: string) => {
+        const t = title.toLowerCase();
+        if (t.includes("photos") || t.includes("photographe")) return <Camera className="h-6 w-6" />;
+        if (t.includes("dîner") || t.includes("repas") || t.includes("manger") || t.includes("buffet")) return <Utensils className="h-6 w-6" />;
+        if (t.includes("cocktail") || t.includes("vin") || t.includes("boire") || t.includes("toast")) return <GlassWater className="h-6 w-6" />;
+        if (t.includes("danse") || t.includes("musique") || t.includes("soirée") || t.includes("bal")) return <Music className="h-6 w-6" />;
+        if (t.includes("cérémonie") || t.includes("église") || t.includes("mairie")) return <Heart className="h-6 w-6" />;
+        if (t.includes("départ") || t.includes("voiture") || t.includes("fin")) return <Car className="h-6 w-6" />;
+        return <Milestone className="h-6 w-6" />;
     }
 
     return (
-        <div className="space-y-4">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-white">Timeline du Mariage</h2>
-                    <p className="text-sm text-zinc-400">
-                        Le déroulé chronologique de votre grand jour.
-                    </p>
+        <div className="max-w-4xl mx-auto space-y-12 pb-20">
+            {/* Header section with wedding feel */}
+            <div className="text-center space-y-4 mb-16">
+                <div className="inline-block p-3 rounded-full bg-pink-500/10 mb-4">
+                    <Heart className="h-8 w-8 text-pink-500 fill-pink-500/20" />
                 </div>
-                <Dialog open={open} onOpenChange={(val) => {
-                    setOpen(val)
-                    if (!val) setEditingTask(null)
-                }}>
-                    <DialogTrigger asChild>
-                        <Button className="bg-pink-600 hover:bg-pink-700">
-                            <Plus className="mr-2 h-4 w-4" /> Ajouter un événement
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px] bg-zinc-950 border-zinc-800 text-white">
-                        <DialogHeader>
-                            <DialogTitle>
-                                {editingTask ? "Modifier l'événement" : "Ajouter à la timeline"}
-                            </DialogTitle>
-                        </DialogHeader>
-                        <TaskForm
-                            initialData={editingTask}
-                            onSuccess={() => setOpen(false)}
-                            labels={{
-                                title: "Nom de l'événement",
-                                titlePlaceholder: "Cérémonie, Vin d'honneur...",
-                                date: "Heure et Date",
-                                submit: "Ajouter à la timeline"
-                            }}
-                        />
-                    </DialogContent>
-                </Dialog>
+                <h1 className="text-5xl font-serif text-white tracking-tight italic">
+                    Notre Jour J
+                </h1>
+                <div className="h-px w-24 bg-gradient-to-r from-transparent via-zinc-700 to-transparent mx-auto my-4" />
+                <p className="text-zinc-400 text-lg uppercase tracking-[0.2em] font-light">
+                    Le déroulé de la journée
+                </p>
+
+                <div className="pt-8">
+                    <Dialog open={open} onOpenChange={(val) => {
+                        setOpen(val)
+                        if (!val) setEditingTask(null)
+                    }}>
+                        <DialogTrigger asChild>
+                            <Button variant="outline" className="border-zinc-800 hover:bg-white hover:text-black transition-all rounded-full px-8">
+                                <Plus className="mr-2 h-4 w-4" /> Ajouter un moment fort
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px] bg-zinc-950 border-zinc-800 text-white p-6 shadow-2xl">
+                            <DialogHeader>
+                                <DialogTitle className="text-2xl font-serif italic mb-4">
+                                    {editingTask ? "Modifier le moment" : "Nouvel événement"}
+                                </DialogTitle>
+                            </DialogHeader>
+                            <TaskForm
+                                initialData={editingTask}
+                                onSuccess={() => setOpen(false)}
+                                labels={{
+                                    title: "Nom de l'événement",
+                                    titlePlaceholder: "Cérémonie, Photos de groupe...",
+                                    date: "Date",
+                                    submit: "Ajouter au programme"
+                                }}
+                            />
+                        </DialogContent>
+                    </Dialog>
+                </div>
             </div>
 
-            <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-zinc-800 before:to-transparent mt-12">
+            {/* Timeline Line */}
+            <div className="relative space-y-0 before:absolute before:inset-0 before:left-1/2 before:-translate-x-px before:h-full before:w-[1px] before:bg-gradient-to-b before:from-transparent before:via-zinc-800 before:to-transparent">
                 {sortedTasks.length === 0 ? (
-                    <div className="text-center py-10 text-zinc-500 border border-dashed border-zinc-800 rounded-lg">
-                        Votre timeline est vide. Ajoutez les moments clés de votre journée !
+                    <div className="text-center py-20 text-zinc-500 italic bg-zinc-900/20 rounded-3xl border border-dashed border-zinc-800">
+                        Votre programme est en cours de création...
                     </div>
                 ) : (
-                    sortedTasks.map((task, index) => (
-                        <div key={task.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                            {/* Dot */}
-                            <div className="flex items-center justify-center w-10 h-10 rounded-full border border-zinc-800 bg-zinc-950 text-zinc-400 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 transition group-hover:border-pink-500/50">
-                                {getStatusIcon(task.status)}
-                            </div>
-                            {/* Card */}
-                            <div className="w-[calc(100%-4rem)] md:w-[45%] p-4 rounded border border-zinc-800 bg-zinc-900/50 shadow transition group-hover:border-zinc-700">
-                                <div className="flex items-center justify-between mb-1">
-                                    <time className="text-xs font-bold text-pink-500 uppercase tracking-wider">
-                                        {task.dueDate ? format(new Date(task.dueDate), "HH:mm", { locale: fr }) : "Horaire à définir"}
-                                    </time>
-                                    <div className="flex gap-2">
-                                        <button onClick={() => onEdit(task)} className="text-zinc-500 hover:text-white transition">
-                                            <Pencil className="h-3 w-3" />
-                                        </button>
-                                        <button onClick={() => onDelete(task.id)} className="text-zinc-500 hover:text-red-500 transition">
-                                            <Trash className="h-3 w-3" />
-                                        </button>
+                    sortedTasks.map((task, index) => {
+                        const isEven = index % 2 === 0;
+                        return (
+                            <div key={task.id} className="relative flex items-center justify-between md:justify-normal group py-8">
+                                {/* Content Wrapper */}
+                                <div className={cn(
+                                    "w-[calc(50%-2rem)] flex flex-col",
+                                    isEven ? "md:mr-auto text-right md:pr-12" : "md:ml-auto md:pl-12 order-2"
+                                )}>
+                                    <div className="space-y-2">
+                                        <div className={cn(
+                                            "flex items-center gap-3",
+                                            isEven ? "justify-end" : "justify-start"
+                                        )}>
+                                            <div className="p-3 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 group-hover:border-pink-500/50 group-hover:text-pink-500 transition-all shadow-xl">
+                                                {getEventIcon(task.title)}
+                                            </div>
+                                            {!isEven && (
+                                                <time className="text-xl font-light text-white tracking-widest">
+                                                    {task.dueDate ? format(new Date(task.dueDate), "HH:mm") : "--:--"}
+                                                </time>
+                                            )}
+                                            {isEven && (
+                                                <time className="text-xl font-light text-white tracking-widest">
+                                                    {task.dueDate ? format(new Date(task.dueDate), "HH:mm") : "--:--"}
+                                                </time>
+                                            )}
+                                        </div>
+                                        <h3 className="text-2xl font-serif text-white group-hover:text-pink-500 transition-colors">
+                                            {task.title}
+                                        </h3>
+                                        {task.description && (
+                                            <p className="text-sm text-zinc-500 font-light leading-relaxed">
+                                                {task.description}
+                                            </p>
+                                        )}
+                                        <div className={cn(
+                                            "flex gap-3 pt-2 opacity-0 group-hover:opacity-100 transition-opacity",
+                                            isEven ? "justify-end" : "justify-start"
+                                        )}>
+                                            <button onClick={() => onEdit(task)} className="text-[10px] uppercase tracking-widest text-zinc-600 hover:text-white">
+                                                Modifier
+                                            </button>
+                                            <button onClick={() => onDelete(task.id)} className="text-[10px] uppercase tracking-widest text-zinc-600 hover:text-red-500">
+                                                Retirer
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <h3 className="font-semibold text-white">{task.title}</h3>
-                                {task.description && (
-                                    <p className="text-sm text-zinc-400 mt-1 line-clamp-2">{task.description}</p>
-                                )}
+
+                                {/* Center Dot */}
+                                <div className="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-zinc-800 border-[3px] border-zinc-950 z-10 group-hover:bg-pink-500 group-hover:scale-125 transition-all shadow-[0_0_15px_rgba(236,72,153,0)] group-hover:shadow-[0_0_15px_rgba(236,72,153,0.5)]" />
                             </div>
-                        </div>
-                    ))
+                        )
+                    })
                 )}
+            </div>
+
+            <div className="text-center pt-20">
+                <p className="text-zinc-600 font-serif italic text-sm">
+                    "Et l'aventure continue..."
+                </p>
             </div>
         </div>
     )
