@@ -106,7 +106,80 @@ export const PurchaseClient = ({ initialData }: PurchaseClientProps) => {
                 </div>
             </div>
 
-            <div className="rounded-3xl border border-[#e9ded0] bg-white overflow-hidden shadow-sm">
+            {/* Mobile View - Cards */}
+            <div className="md:hidden space-y-4">
+                {initialData.length === 0 ? (
+                    <div className="h-32 flex items-center justify-center bg-white rounded-3xl border border-dashed border-[#e9ded0] text-muted-foreground font-serif italic">
+                        Aucun achat trouvé.
+                    </div>
+                ) : (
+                    <StaggerContainer className="space-y-4">
+                        {initialData.map((purchase) => (
+                            <StaggerItem key={purchase.id}>
+                                <div className="bg-white border border-[#e9ded0] rounded-3xl shadow-sm p-5 space-y-4 group">
+                                    <div className="flex justify-between items-start">
+                                        <div className="flex flex-col">
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-serif font-bold text-lg text-foreground group-hover:text-primary transition-colors">{purchase.type}</span>
+                                                {purchase.link && (
+                                                    <a
+                                                        href={purchase.link}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-muted-foreground hover:text-primary transition-colors"
+                                                    >
+                                                        <ExternalLink className="h-3 w-3" />
+                                                    </a>
+                                                )}
+                                            </div>
+                                            <span className="text-sm font-medium text-muted-foreground mt-1">
+                                                {purchase.quantity} x {purchase.price.toLocaleString()} €
+                                            </span>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="font-serif font-extrabold text-xl text-primary">
+                                                {(purchase.price * purchase.quantity).toLocaleString()} €
+                                            </div>
+                                            <div className="mt-1">
+                                                {purchase.isPaid ? (
+                                                    <Badge className="bg-secondary/20 text-secondary border-secondary/30 font-bold px-2 py-0.5 rounded-full uppercase text-[9px] tracking-widest">Payé</Badge>
+                                                ) : (
+                                                    <Badge variant="secondary" className="bg-muted text-muted-foreground font-bold px-2 py-0.5 rounded-full uppercase text-[9px] tracking-widest">À payer</Badge>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-2 pt-2 border-t border-border/10">
+                                        <Button
+                                            variant="outline"
+                                            className="flex-1 rounded-xl border-[#e9ded0] text-[#7c6d66] hover:bg-primary/5 hover:text-primary h-9 text-xs"
+                                            onClick={() => onEdit(purchase)}
+                                        >
+                                            <Pencil className="mr-2 h-3.5 w-3.5" /> Modifier
+                                        </Button>
+                                        <ConfirmModal
+                                            title="Supprimer cet achat ?"
+                                            description="Cette action est irréversible."
+                                            onConfirm={() => onDelete(purchase.id)}
+                                        >
+                                            <Button
+                                                variant="ghost"
+                                                className="flex-1 rounded-xl text-destructive hover:bg-destructive/5 h-9 text-xs"
+                                            >
+                                                <Trash className="mr-2 h-3.5 w-3.5" /> Retirer
+                                            </Button>
+                                        </ConfirmModal>
+                                    </div>
+                                </div>
+                            </StaggerItem>
+                        ))}
+                    </StaggerContainer>
+                )}
+            </div>
+
+            {/* Desktop View - Table */}
+            <div className="hidden md:block rounded-3xl border border-[#e9ded0] bg-white overflow-hidden shadow-sm">
                 <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent border-[#e9ded0] bg-[#f3ece4]">

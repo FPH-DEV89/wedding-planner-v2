@@ -194,7 +194,61 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
                     </TabsList>
                 </Tabs>
 
-                <div className="mt-6 rounded-3xl border border-[#e9ded0] bg-white overflow-hidden shadow-sm">
+                {/* Mobile View - Cards */}
+                <div className="md:hidden space-y-4">
+                    {filteredData.length === 0 ? (
+                        <div className="h-32 flex items-center justify-center bg-white rounded-3xl border border-dashed border-[#e9ded0] text-muted-foreground font-serif italic">
+                            Aucun invité dans cette liste.
+                        </div>
+                    ) : (
+                        <StaggerContainer className="space-y-4">
+                            {filteredData.map((guest) => (
+                                <StaggerItem key={guest.id}>
+                                    <div className="bg-white border border-[#e9ded0] rounded-3xl shadow-sm p-5 space-y-4 group">
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <div className="font-serif font-bold text-lg text-foreground group-hover:text-primary transition-colors">
+                                                    {guest.name}
+                                                </div>
+                                                <div className="text-xs text-muted-foreground italic mt-0.5">
+                                                    {guest.relation || "Pas de relation précisée"}
+                                                </div>
+                                            </div>
+                                            <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary font-medium rounded-lg px-2 py-0.5">
+                                                {guest.category || "Standard"}
+                                            </Badge>
+                                        </div>
+
+                                        <div className="flex gap-2 pt-2 border-t border-border/10">
+                                            <Button
+                                                variant="outline"
+                                                className="flex-1 rounded-xl border-[#e9ded0] text-[#7c6d66] hover:bg-primary/5 hover:text-primary h-9 text-xs"
+                                                onClick={() => onEdit(guest)}
+                                            >
+                                                <Pencil className="mr-2 h-3.5 w-3.5" /> Modifier
+                                            </Button>
+                                            <ConfirmModal
+                                                title="Supprimer cet invité ?"
+                                                description="Cette action est irréversible."
+                                                onConfirm={() => onDelete(guest.id)}
+                                            >
+                                                <Button
+                                                    variant="ghost"
+                                                    className="flex-1 rounded-xl text-destructive hover:bg-destructive/5 h-9 text-xs"
+                                                >
+                                                    <Trash className="mr-2 h-3.5 w-3.5" /> Retirer
+                                                </Button>
+                                            </ConfirmModal>
+                                        </div>
+                                    </div>
+                                </StaggerItem>
+                            ))}
+                        </StaggerContainer>
+                    )}
+                </div>
+
+                {/* Desktop View - Table */}
+                <div className="mt-6 hidden md:block rounded-3xl border border-[#e9ded0] bg-white overflow-hidden shadow-sm">
                     <Table>
                         <TableHeader className="bg-[#f3ece4]">
                             <TableRow className="hover:bg-transparent border-[#e9ded0]">

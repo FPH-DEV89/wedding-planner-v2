@@ -129,7 +129,7 @@ export const TimelineClient = ({ initialData }: TimelineClientProps) => {
             </div>
 
             {/* Timeline Line */}
-            <div className="relative space-y-0 before:absolute before:inset-0 before:left-1/2 before:-translate-x-px before:h-full before:w-[2px] before:bg-gradient-to-b before:from-transparent before:via-border/60 before:to-transparent">
+            <div className="relative space-y-0 before:absolute before:inset-0 md:before:left-1/2 before:left-8 before:-translate-x-px before:h-full before:w-[2px] before:bg-gradient-to-b before:from-transparent before:via-border/60 before:to-transparent">
                 {sortedTasks.length === 0 ? (
                     <div className="text-center py-20 text-muted-foreground italic bg-white/40 backdrop-blur-sm rounded-3xl border-2 border-dashed border-border/40 font-serif text-xl">
                         Votre programme est en cours de création...
@@ -141,20 +141,20 @@ export const TimelineClient = ({ initialData }: TimelineClientProps) => {
                             <div key={task.id} className="relative flex items-center justify-between md:justify-normal group py-10">
                                 {/* Content Wrapper */}
                                 <div className={cn(
-                                    "w-[calc(50%-2.5rem)] flex flex-col",
-                                    isEven ? "md:mr-auto text-right md:pr-12" : "md:ml-auto md:pl-12 order-2"
+                                    "w-full md:w-[calc(50%-2.5rem)] flex flex-col ml-16 md:ml-0",
+                                    isEven ? "md:mr-auto md:text-right md:pr-12" : "md:ml-auto md:pl-12 md:order-2"
                                 )}>
                                     <div className="space-y-3">
                                         <div className={cn(
                                             "flex items-center gap-4",
-                                            isEven ? "justify-end" : "justify-start"
+                                            isEven ? "md:justify-end justify-start" : "justify-start"
                                         )}>
                                             <div className="p-4 rounded-2xl bg-white border border-[#e9ded0] text-[#c96d4b] shadow-sm group-hover:bg-[#c96d4b] group-hover:text-white group-hover:scale-110 transition-all duration-300">
                                                 {getEventIcon(task.title)}
                                             </div>
                                             <div className={cn(
                                                 "flex flex-col gap-0",
-                                                isEven ? "items-end text-right" : "items-start text-left"
+                                                isEven ? "md:items-end items-start md:text-right text-left" : "items-start text-left"
                                             )}>
                                                 {task.dueDate && (
                                                     <span className="text-[10px] font-bold text-primary/60 uppercase tracking-widest mb-0.5">
@@ -178,7 +178,7 @@ export const TimelineClient = ({ initialData }: TimelineClientProps) => {
                                         </div>
                                         <div className={cn(
                                             "flex gap-4 pt-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0",
-                                            isEven ? "justify-end" : "justify-start"
+                                            isEven ? "md:justify-end justify-start" : "justify-start"
                                         )}>
                                             <button onClick={() => onEdit(task)} className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors border-b border-transparent hover:border-primary pb-0.5">
                                                 Modifier
@@ -197,7 +197,7 @@ export const TimelineClient = ({ initialData }: TimelineClientProps) => {
                                 </div>
 
                                 {/* Center Dot */}
-                                <div className="absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-white border-4 border-[#7c6d66]/20 z-10 group-hover:bg-[#c96d4b] group-hover:border-[#c96d4b] group-hover:scale-125 transition-all duration-300 shadow-sm" />
+                                <div className="absolute md:left-1/2 left-8 -translate-x-1/2 w-4 h-4 rounded-full bg-white border-4 border-[#7c6d66]/20 z-10 group-hover:bg-[#c96d4b] group-hover:border-[#c96d4b] group-hover:scale-125 transition-all duration-300 shadow-sm" />
                             </div>
                         )
                     })

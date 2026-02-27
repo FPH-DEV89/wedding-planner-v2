@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { BudgetChart } from "./budget-chart"
 import { getSettings } from "@/features/settings/actions"
+import { cn } from "@/lib/utils"
 
 const SHARED_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
 
@@ -100,6 +101,18 @@ export const DashboardOverview = async () => {
         }
     ]
 
+    const upcomingEvents = await prisma.task.findMany({
+        where: {
+            userId,
+            status: { not: "COMPLETED" },
+            dueDate: { gte: now }
+        },
+        orderBy: {
+            dueDate: 'asc'
+        },
+        take: 3
+    })
+
     return (
         <div className="flex-1 space-y-10 p-8 pt-6">
             <div className="flex flex-col gap-2">
@@ -149,24 +162,48 @@ export const DashboardOverview = async () => {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-6">
-                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-secondary/10 border border-secondary/20 group hover:bg-secondary/20 transition-colors">
-                                <div className="h-12 w-12 rounded-full bg-secondary/20 flex items-center justify-center text-secondary font-bold font-serif">
-                                    15
+                            {upcomingEvents.length === 0 ? (
+                                <div className="h-40 flex flex-col items-center justify-center bg-primary/5 rounded-2xl border border-dashed border-primary/20 text-center p-6">
+                                    <Clock className="h-8 w-8 text-primary/40 mb-2" />
+                                    <p className="text-sm font-medium text-muted-foreground italic">Aucun évènement prévu prochainement.</p>
                                 </div>
-                                <div className="flex-1">
-                                    <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">Dégustation Traiteur</p>
-                                    <p className="text-xs text-muted-foreground italic">Prévu dans 15 jours</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-4 p-4 rounded-2xl bg-primary/5 border border-primary/10 group hover:bg-primary/10 transition-colors">
-                                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold font-serif">
-                                    30
-                                </div>
-                                <div className="flex-1">
-                                    <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">Essayage Robe / Costume</p>
-                                    <p className="text-xs text-muted-foreground italic">Prévu dans 30 jours</p>
-                                </div>
-                            </div>
+                            ) : (
+                                upcomingEvents.map((event, index) => {
+                                    const eventDiffTime = event.dueDate ? event.dueDate.getTime() - now.getTime() : 0
+                                    const eventDiffDays = Math.ceil(eventDiffTime / (1000 * 60 * 60 * 24))
+                                    const isSoon = eventDiffDays <= 7
+
+                                    return (
+                                        <Link key={event.id} href={event.type === "TIMELINE" ? "/timeline" : "/tasks"}>
+                                            <div className={cn(
+                                                "flex items-center gap-4 p-4 rounded-2xl border transition-all duration-300 group hover:shadow-md mb-4 last:mb-0",
+                                                isSoon
+                                                    ? "bg-secondary/10 border-secondary/20 hover:bg-secondary/20"
+                                                    : "bg-primary/5 border-primary/10 hover:bg-primary/10"
+                                            )}>
+                                                <div className={cn(
+                                                    "h-12 w-12 rounded-full flex items-center justify-center font-bold font-serif shadow-sm",
+                                                    isSoon ? "bg-secondary/20 text-secondary" : "bg-primary/10 text-primary"
+                                                )}>
+                                                    {eventDiffDays > 0 ? eventDiffDays : "!"}
+                                                </div>
+                                                <div className="flex-1">
+                                                    <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors truncate">
+                                                        {event.title}
+                                                    </p>
+                                                    <p className="text-xs text-muted-foreground italic">
+                                                        {eventDiffDays === 0
+                                                            ? "Aujourd'hui"
+                                                            : eventDiffDays === 1
+                                                                ? "Demain"
+                                                                : `Prévu dans ${eventDiffDays} jours`}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    )
+                                })
+                            )}
                         </div>
                     </CardContent>
                 </Card>
