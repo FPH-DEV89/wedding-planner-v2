@@ -9,6 +9,7 @@ export const TaskSchema = z.object({
     status: z.enum(["TODO", "IN_PROGRESS", "DONE"]),
     priority: z.enum(["LOW", "MEDIUM", "HIGH"]),
     type: z.enum(["TASK", "TIMELINE"]),
+    time: z.string().optional(),
 })
 
 export type TaskFormValues = z.infer<typeof TaskSchema>

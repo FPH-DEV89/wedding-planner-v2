@@ -29,10 +29,11 @@ export async function createTask(values: TaskFormValues) {
 
     try {
         const userId = SHARED_USER_ID
+        const { time, ...data } = validatedFields.data
 
         const task = await prisma.task.create({
             data: {
-                ...validatedFields.data,
+                ...data,
                 userId,
             },
         })
@@ -54,10 +55,11 @@ export async function updateTask(id: string, values: TaskFormValues) {
     }
 
     try {
+        const { time, ...data } = validatedFields.data
         await prisma.task.update({
             where: { id },
             data: {
-                ...validatedFields.data,
+                ...data,
             },
         })
 

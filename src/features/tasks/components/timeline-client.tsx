@@ -152,12 +152,19 @@ export const TimelineClient = ({ initialData }: TimelineClientProps) => {
                                             <div className="p-4 rounded-2xl bg-white border border-[#e9ded0] text-[#c96d4b] shadow-sm group-hover:bg-[#c96d4b] group-hover:text-white group-hover:scale-110 transition-all duration-300">
                                                 {getEventIcon(task.title)}
                                             </div>
-                                            <time className={cn(
-                                                "text-2xl font-serif font-extrabold text-[#3a2a22] tracking-widest",
-                                                !isEven && "order-first mr-2"
+                                            <div className={cn(
+                                                "flex flex-col gap-0",
+                                                isEven ? "items-end text-right" : "items-start text-left"
                                             )}>
-                                                {task.dueDate ? format(new Date(task.dueDate), "HH:mm") : "--:--"}
-                                            </time>
+                                                {task.dueDate && (
+                                                    <span className="text-[10px] font-bold text-primary/60 uppercase tracking-widest mb-0.5">
+                                                        {format(new Date(task.dueDate), "d MMMM", { locale: fr })}
+                                                    </span>
+                                                )}
+                                                <time className="text-2xl font-serif font-extrabold text-[#3a2a22] tracking-widest leading-none">
+                                                    {task.dueDate ? format(new Date(task.dueDate), "HH:mm") : "--:--"}
+                                                </time>
+                                            </div>
                                         </div>
                                         <div>
                                             <h3 className="text-2xl font-serif font-extrabold text-[#3a2a22] group-hover:text-[#c96d4b] transition-colors">
