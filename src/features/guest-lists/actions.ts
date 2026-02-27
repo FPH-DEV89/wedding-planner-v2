@@ -1,15 +1,18 @@
 "use server"
 
+const SHARED_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
+
 import prisma from "@/lib/prisma"
+import { auth } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
 import { GuestListSchema, GuestListFormValues } from "./schema"
 
-const MOCK_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
-
 export async function getGuestLists() {
+    const userId = SHARED_USER_ID
+
     try {
         const lists = await prisma.guestList.findMany({
-            where: { userId: MOCK_USER_ID },
+            where: { userId },
             orderBy: { createdAt: "asc" },
             include: {
                 _count: {
@@ -31,10 +34,12 @@ export async function createGuestList(values: GuestListFormValues) {
     }
 
     try {
+        const userId = SHARED_USER_ID
+
         const list = await prisma.guestList.create({
             data: {
                 ...validatedFields.data,
-                userId: MOCK_USER_ID,
+                userId,
             },
         })
 

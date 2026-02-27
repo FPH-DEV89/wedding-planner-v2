@@ -36,6 +36,9 @@ export const TaskClient = ({ initialData }: TaskClientProps) => {
     const [open, setOpen] = useState(false)
     const [editingTask, setEditingTask] = useState<Task | null>(null)
 
+    // Only show "TASK" type tasks
+    const todoTasks = initialData.filter(task => task.type === "TASK")
+
     const onEdit = (task: Task) => {
         setEditingTask(task)
         setOpen(true)
@@ -101,7 +104,7 @@ export const TaskClient = ({ initialData }: TaskClientProps) => {
                 <div>
                     <h2 className="text-4xl font-serif font-extrabold tracking-tight text-[#c96d4b]">Liste des Tâches</h2>
                     <p className="text-sm text-[#7c6d66] mt-1 font-medium">
-                        {initialData.filter(t => t.status !== "DONE").length} missions à accomplir pour le jour J.
+                        {todoTasks.filter(t => t.status !== "DONE").length} missions à accomplir pour le jour J.
                     </p>
                 </div>
                 <Dialog open={open} onOpenChange={(val) => {
@@ -132,12 +135,12 @@ export const TaskClient = ({ initialData }: TaskClientProps) => {
             </div>
 
             <div className="grid gap-3 mt-6">
-                {initialData.length === 0 ? (
+                {todoTasks.length === 0 ? (
                     <div className="text-center py-20 text-muted-foreground border-2 border-dashed border-border/40 rounded-3xl font-serif italic text-lg bg-white/40 backdrop-blur-sm">
                         Votre liste de tâches est vide pour le moment.
                     </div>
                 ) : (
-                    initialData.map((task) => (
+                    todoTasks.map((task) => (
                         <Card key={task.id} className={cn(
                             "bg-white border-[#e9ded0] rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 group overflow-hidden",
                             task.status === "DONE" && "opacity-60 bg-[#f3ece4]"

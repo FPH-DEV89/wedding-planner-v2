@@ -1,24 +1,74 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
-import { auth } from "@/lib/auth"
 import prisma from "@/lib/prisma"
+import { revalidatePath } from "next/cache"
 
-const MOCK_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
+const SHARED_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
 
-export const updateUser = async (data: { name: string }) => {
-    const session = await auth()
-    const userId = session?.user?.id || MOCK_USER_ID
+export async function getSettings() {
+    const userId = SHARED_USER_ID
 
     try {
-        await prisma.user.update({
-            where: { id: userId },
-            data: { name: data.name }
+        const settings = await prisma.setting.findMany({
+            where: { userId },
+        })
+
+        // Convert to a more usable object format
+        const settingsMap = settings.reduce((acc, setting) => {
+            acc[setting.key] = setting.value
+            return acc
+        }, {} as Record<string, string>)
+
+        return { data: settingsMap }
+    } catch (error) {
+        return { error: "Impossible de récupérer les réglages." }
+    }
+}
+
+export async function updateSetting(key: string, value: string) {
+    const userId = SHARED_USER_ID
+
+    try {
+        await prisma.setting.upsert({
+            where: { key },
+            update: { value },
+            create: {
+                key,
+                value,
+                userId,
+            },
         })
 
         revalidatePath("/")
-        return { success: "Profil mis à jour avec succès" }
+        revalidatePath("/dashboard")
+        return { success: "Réglage mis à jour !" }
     } catch (error) {
-        return { error: "Erreur lors de la mise à jour du profil" }
+        return { error: "Erreur lors de la mise à jour du réglage." }
+    }
+}
+
+export async function updateSettings(settings: Record<string, string>) {
+    const userId = SHARED_USER_ID
+
+    try {
+        const operations = Object.entries(settings).map(([key, value]) =>
+            prisma.setting.upsert({
+                where: { key },
+                update: { value },
+                create: {
+                    key,
+                    value,
+                    userId,
+                },
+            })
+        )
+
+        await prisma.$transaction(operations)
+
+        revalidatePath("/")
+        revalidatePath("/dashboard")
+        return { success: "Réglages mis à jour !" }
+    } catch (error) {
+        return { error: "Erreur lors de la mise à jour des réglages." }
     }
 }

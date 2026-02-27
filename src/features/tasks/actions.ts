@@ -4,12 +4,14 @@ import prisma from "@/lib/prisma"
 import { TaskSchema, TaskFormValues, Task } from "./schema"
 import { revalidatePath } from "next/cache"
 
-const MOCK_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
+const SHARED_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
 
 export async function getTasks() {
+    const userId = SHARED_USER_ID
+
     try {
         const tasks = await prisma.task.findMany({
-            where: { userId: MOCK_USER_ID },
+            where: { userId },
             orderBy: { createdAt: "desc" },
         })
         return { data: tasks as any as Task[] }
@@ -26,14 +28,17 @@ export async function createTask(values: TaskFormValues) {
     }
 
     try {
+        const userId = SHARED_USER_ID
+
         const task = await prisma.task.create({
             data: {
                 ...validatedFields.data,
-                userId: MOCK_USER_ID,
+                userId,
             },
         })
 
         revalidatePath("/tasks")
+        revalidatePath("/timeline")
         revalidatePath("/dashboard")
         return { success: "Tâche ajoutée !", data: task }
     } catch (error) {
@@ -57,6 +62,7 @@ export async function updateTask(id: string, values: TaskFormValues) {
         })
 
         revalidatePath("/tasks")
+        revalidatePath("/timeline")
         revalidatePath("/dashboard")
         return { success: "Tâche mise à jour !" }
     } catch (error) {
@@ -70,6 +76,7 @@ export async function deleteTask(id: string) {
             where: { id },
         })
         revalidatePath("/tasks")
+        revalidatePath("/timeline")
         revalidatePath("/dashboard")
         return { success: "Tâche supprimée !" }
     } catch (error) {
@@ -84,6 +91,7 @@ export async function updateTaskStatus(id: string, status: "TODO" | "IN_PROGRESS
             data: { status }
         })
         revalidatePath("/tasks")
+        revalidatePath("/timeline")
         return { success: "Statut mis à jour !" }
     } catch (error) {
         return { error: "Erreur lors de la mise à jour." }

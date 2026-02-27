@@ -44,6 +44,7 @@ interface TaskFormProps {
         dueDate?: Date | null
         status: "TODO" | "IN_PROGRESS" | "DONE"
         priority: "LOW" | "MEDIUM" | "HIGH"
+        type: "TASK" | "TIMELINE"
     } | null
     onSuccess: () => void
     labels?: {
@@ -66,6 +67,7 @@ export const TaskForm = ({ initialData, onSuccess, labels }: TaskFormProps) => {
             dueDate: initialData?.dueDate ? new Date(initialData.dueDate) : undefined,
             status: initialData?.status || "TODO",
             priority: initialData?.priority || "MEDIUM",
+            type: initialData?.type || (labels?.submit?.includes("programme") ? "TIMELINE" : "TASK") as any,
             time: initialData?.dueDate ? format(new Date(initialData.dueDate), "HH:mm") : "12:00",
         },
     })
@@ -202,63 +204,9 @@ export const TaskForm = ({ initialData, onSuccess, labels }: TaskFormProps) => {
                         )}
                     />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                        control={form.control}
-                        name="status"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Statut</FormLabel>
-                                <Select
-                                    disabled={loading}
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                >
-                                    <FormControl>
-                                        <SelectTrigger className="border-border/40 bg-white rounded-xl focus:ring-[#c96d4b]/20 transition-all text-foreground">
-                                            <SelectValue placeholder="Statut" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent className="bg-white border-border/40 rounded-xl shadow-lg">
-                                        <SelectItem value="TODO">À faire</SelectItem>
-                                        <SelectItem value="IN_PROGRESS">En cours</SelectItem>
-                                        <SelectItem value="DONE">Terminé</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="priority"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Priorité</FormLabel>
-                                <Select
-                                    disabled={loading}
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                >
-                                    <FormControl>
-                                        <SelectTrigger className="border-border/40 bg-white rounded-xl focus:ring-[#c96d4b]/20 transition-all text-foreground">
-                                            <SelectValue placeholder="Priorité" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent className="bg-white border-border/40 rounded-xl shadow-lg">
-                                        <SelectItem value="LOW">Basse</SelectItem>
-                                        <SelectItem value="MEDIUM">Moyenne</SelectItem>
-                                        <SelectItem value="HIGH">Haute</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
                 <Button
                     disabled={loading}
-                    className="ml-auto w-full bg-[#c96d4b] hover:bg-[#b05a3a] text-white font-bold h-12 rounded-2xl shadow-lg transition-all hover:shadow-[#c96d4b]/20 active:scale-95"
+                    className="w-full bg-[#c96d4b] hover:bg-[#b05a3a] text-white font-bold h-12 rounded-2xl shadow-lg transition-all hover:shadow-[#c96d4b]/20 active:scale-95"
                     type="submit"
                 >
                     {initialData ? "Enregistrer les modifications" : (labels?.submit || "Ajouter la tâche")}

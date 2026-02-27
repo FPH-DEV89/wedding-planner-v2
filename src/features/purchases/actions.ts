@@ -4,12 +4,14 @@ import prisma from "@/lib/prisma"
 import { PurchaseSchema, PurchaseFormValues } from "./schema"
 import { revalidatePath } from "next/cache"
 
-const MOCK_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
+const SHARED_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
 
 export async function getPurchases() {
+    const userId = SHARED_USER_ID
+
     try {
         const purchases = await prisma.purchase.findMany({
-            where: { userId: MOCK_USER_ID },
+            where: { userId },
             orderBy: { createdAt: "desc" },
         })
         return { data: purchases }
@@ -26,10 +28,12 @@ export async function createPurchase(values: PurchaseFormValues) {
     }
 
     try {
+        const userId = SHARED_USER_ID
+
         const purchase = await prisma.purchase.create({
             data: {
                 ...validatedFields.data,
-                userId: MOCK_USER_ID,
+                userId,
             },
         })
 

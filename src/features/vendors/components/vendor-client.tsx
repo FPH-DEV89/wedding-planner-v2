@@ -142,7 +142,8 @@ export const VendorClient = ({ initialData }: VendorClientProps) => {
                 </Card>
             </div>
 
-            <div className="rounded-3xl border border-[#e9ded0] bg-white overflow-hidden shadow-sm">
+            {/* Desktop Table View */}
+            <div className="hidden md:block rounded-3xl border border-[#e9ded0] bg-white overflow-hidden shadow-sm">
                 <Table>
                     <TableHeader>
                         <TableRow className="hover:bg-transparent border-[#e9ded0] bg-[#f3ece4]">
@@ -221,6 +222,82 @@ export const VendorClient = ({ initialData }: VendorClientProps) => {
                         )}
                     </StaggerContainer>
                 </Table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-4">
+                {initialData.length === 0 ? (
+                    <div className="h-32 flex items-center justify-center bg-white rounded-3xl border border-dashed border-[#e9ded0] text-muted-foreground font-serif italic">
+                        Aucun prestataire trouvé.
+                    </div>
+                ) : (
+                    <StaggerContainer className="space-y-4">
+                        {initialData.map((vendor) => (
+                            <StaggerItem key={vendor.id}>
+                                <Card className="bg-white border-[#e9ded0] rounded-3xl shadow-sm overflow-hidden p-6 space-y-4">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <div className="font-serif font-bold text-xl text-foreground">{vendor.name}</div>
+                                            <div className="text-xs text-muted-foreground uppercase tracking-wider font-bold">{vendor.category}</div>
+                                        </div>
+                                        <div className="scale-75 origin-right">
+                                            {getStatusBadge(vendor.status)}
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4 py-4 border-y border-border/10">
+                                        <div>
+                                            <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-1">Prix</div>
+                                            <div className="font-serif font-extrabold text-[#3a2a22] text-lg">{vendor.price.toLocaleString()} €</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-1">Payé</div>
+                                            <div className="font-serif font-extrabold text-secondary text-lg">{vendor.paidAmount.toLocaleString()} €</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        {vendor.contactName && (
+                                            <div className="flex items-center gap-3 text-sm font-medium">
+                                                <User className="h-4 w-4 text-primary" />
+                                                <span>{vendor.contactName}</span>
+                                            </div>
+                                        )}
+                                        {vendor.phone && (
+                                            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                                <Phone className="h-4 w-4 text-primary/60" />
+                                                <span>{vendor.phone}</span>
+                                            </div>
+                                        )}
+                                        {vendor.email && (
+                                            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                                <Mail className="h-4 w-4 text-primary/60" />
+                                                <span>{vendor.email}</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="flex gap-2 pt-2">
+                                        <Button
+                                            variant="outline"
+                                            className="flex-1 rounded-xl border-[#e9ded0] text-[#7c6d66] hover:bg-primary/5 hover:text-primary"
+                                            onClick={() => onEdit(vendor)}
+                                        >
+                                            <Pencil className="mr-2 h-4 w-4" /> Modifier
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            className="flex-1 rounded-xl text-destructive hover:bg-destructive/5"
+                                            onClick={() => onDelete(vendor.id)}
+                                        >
+                                            <Trash className="mr-2 h-4 w-4" /> Retirer
+                                        </Button>
+                                    </div>
+                                </Card>
+                            </StaggerItem>
+                        ))}
+                    </StaggerContainer>
+                )}
             </div>
         </div>
     )

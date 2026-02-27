@@ -1,8 +1,5 @@
-"use client"
-
 import { Sidebar } from "@/components/shared/Sidebar"
 import { Navbar } from "@/components/shared/Navbar"
-import { AnimatePresence } from "framer-motion"
 
 const DashboardLayout = ({
     children

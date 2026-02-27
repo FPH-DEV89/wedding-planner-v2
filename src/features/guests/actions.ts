@@ -4,14 +4,15 @@ import prisma from "@/lib/prisma"
 import { GuestSchema, GuestFormValues } from "./schema"
 import { revalidatePath } from "next/cache"
 
-// Mock User ID for now until Auth is fully wired up
-const MOCK_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
+const SHARED_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
 
 export async function getGuests(listId?: string) {
+    const userId = SHARED_USER_ID
+
     try {
         const guests = await prisma.guest.findMany({
             where: {
-                userId: MOCK_USER_ID,
+                userId,
                 ...(listId ? { listId } : {})
             },
             orderBy: { createdAt: "desc" },
@@ -30,13 +31,21 @@ export async function createGuest(values: GuestFormValues) {
     }
 
     try {
+        const userId = SHARED_USER_ID
+
+        // The original code handled listId: listId || null.
+        // Assuming validatedFields.data already contains listId in the correct format (null if empty/undefined),
+        // or that the schema ensures it's either a string or null.
+        // If listId can be an empty string from the form, and should be stored as null,
+        // then validatedFields.data.listId might need explicit conversion.
+        // For now, we'll spread validatedFields.data directly.
         const { listId, ...rest } = validatedFields.data
 
         const guest = await prisma.guest.create({
             data: {
                 ...rest,
-                listId: listId || null,
-                userId: MOCK_USER_ID,
+                listId: listId || null, // Ensure listId is null if empty
+                userId,
             },
         })
 

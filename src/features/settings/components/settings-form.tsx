@@ -17,34 +17,38 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { updateUser } from "../actions"
+import { updateSettings } from "../actions"
 
 const SettingsSchema = z.object({
-    name: z.string().min(2, {
-        message: "Le nom doit contenir au moins 2 caractères.",
+    wedding_names: z.string().min(2, {
+        message: "Les noms doivent contenir au moins 2 caractères.",
+    }),
+    wedding_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, {
+        message: "Format invalide (AAAA-MM-JJ).",
     }),
 })
 
 type SettingsFormValues = z.infer<typeof SettingsSchema>
 
 interface SettingsFormProps {
-    initialName?: string
+    initialValues?: Partial<SettingsFormValues>
 }
 
-export const SettingsForm = ({ initialName }: SettingsFormProps) => {
+export const SettingsForm = ({ initialValues }: SettingsFormProps) => {
     const [loading, setLoading] = useState(false)
 
     const form = useForm<SettingsFormValues>({
         resolver: zodResolver(SettingsSchema),
         defaultValues: {
-            name: initialName || "",
+            wedding_names: initialValues?.wedding_names || "",
+            wedding_date: initialValues?.wedding_date || "2026-09-12",
         },
     })
 
     const onSubmit = async (values: SettingsFormValues) => {
         try {
             setLoading(true)
-            const response = await updateUser(values) as { error?: string; success?: string }
+            const response = await updateSettings(values) as { error?: string; success?: string }
 
             if (response.error) {
                 toast.error(response.error)
@@ -63,15 +67,32 @@ export const SettingsForm = ({ initialName }: SettingsFormProps) => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full max-w-md">
                 <FormField
                     control={form.control}
-                    name="name"
+                    name="wedding_names"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel className="text-base font-serif font-bold text-[#3a2a22]">Nom de l'organisateur</FormLabel>
+                            <FormLabel className="text-base font-serif font-bold text-[#3a2a22]">Noms des Mariés</FormLabel>
                             <FormDescription className="text-[#7c6d66]">
-                                Ce nom sera affiché en haut à droite de l'application.
+                                Ex: Florian & Vanessa
                             </FormDescription>
                             <FormControl>
-                                <Input disabled={loading} placeholder="Votre nom" {...field} className="bg-white border-border/40 rounded-xl focus:ring-[#c96d4b]/20 transition-all font-medium text-[#3a2a22]" />
+                                <Input disabled={loading} placeholder="Noms des mariés" {...field} className="bg-white border-border/40 rounded-xl focus:ring-[#c96d4b]/20 transition-all font-medium text-[#3a2a22]" />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="wedding_date"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel className="text-base font-serif font-bold text-[#3a2a22]">Date du Mariage</FormLabel>
+                            <FormDescription className="text-[#7c6d66]">
+                                Format: AAAA-MM-JJ
+                            </FormDescription>
+                            <FormControl>
+                                <Input disabled={loading} placeholder="2026-09-12" {...field} className="bg-white border-border/40 rounded-xl focus:ring-[#c96d4b]/20 transition-all font-medium text-[#3a2a22]" />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

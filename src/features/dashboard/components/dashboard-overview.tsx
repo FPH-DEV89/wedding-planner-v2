@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma"
+import { redirect } from "next/navigation"
 import {
     Users,
     CreditCard,
@@ -7,18 +8,24 @@ import {
 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
+import { BudgetChart } from "./budget-chart"
+import { getSettings } from "@/features/settings/actions"
 
-const MOCK_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
-const WEDDING_DATE = new RegExp("2026-09-12T00:00:00Z") // Target date
-const WEDDING_DATE_OBJ = new Date("2026-09-12")
+const SHARED_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
 
 export const DashboardOverview = async () => {
+    const userId = SHARED_USER_ID
+
+    const settingsResponse = await getSettings()
+    const settings = settingsResponse.data || {}
+    const weddingDate = settings.wedding_date ? new Date(settings.wedding_date) : new Date("2026-09-12")
+
     const guestCounts = await prisma.guest.count({
-        where: { userId: MOCK_USER_ID }
+        where: { userId }
     })
 
     const guestLists = await prisma.guestList.findMany({
-        where: { userId: MOCK_USER_ID },
+        where: { userId },
         include: {
             _count: {
                 select: { guests: true }
@@ -28,7 +35,7 @@ export const DashboardOverview = async () => {
 
     const confirmedGuests = await prisma.guest.count({
         where: {
-            userId: MOCK_USER_ID,
+            userId,
             category: {
                 contains: "Confirmé",
                 mode: 'insensitive'
@@ -37,11 +44,11 @@ export const DashboardOverview = async () => {
     })
 
     const vendors = await prisma.vendor.findMany({
-        where: { userId: MOCK_USER_ID }
+        where: { userId }
     })
 
     const purchases = await prisma.purchase.findMany({
-        where: { userId: MOCK_USER_ID }
+        where: { userId }
     })
 
     const totalVendors = vendors.reduce((acc: number, v: { price: number }) => acc + v.price, 0)
@@ -55,7 +62,7 @@ export const DashboardOverview = async () => {
     const remaining = totalBudget - totalPaid
 
     const now = new Date()
-    const diffTime = WEDDING_DATE_OBJ.getTime() - now.getTime()
+    const diffTime = weddingDate.getTime() - now.getTime()
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
     const stats = [
@@ -64,7 +71,7 @@ export const DashboardOverview = async () => {
             value: `${guestCounts}`,
             description: guestLists.map((l: any) => `${l.name}: ${l._count.guests}`).join(", "),
             icon: Users,
-            color: "text-sky-500",
+            color: "text-[#c96d4b]",
             href: "/guests"
         },
         {
@@ -72,7 +79,7 @@ export const DashboardOverview = async () => {
             value: `${totalBudget.toLocaleString('fr-FR')} €`,
             description: "Prestataires + Achats",
             icon: CreditCard,
-            color: "text-emerald-500",
+            color: "text-[#c96d4b]",
             href: "/budget"
         },
         {
@@ -80,15 +87,15 @@ export const DashboardOverview = async () => {
             value: `${remaining.toLocaleString('fr-FR')} €`,
             description: "Sur un total de " + totalBudget.toLocaleString('fr-FR') + " €",
             icon: Clock,
-            color: "text-orange-500",
+            color: "text-[#c96d4b]",
             href: "/budget"
         },
         {
             title: "Jours restants",
             value: `${diffDays}`,
-            description: "Avant le 12/09/2026",
+            description: `Avant le ${weddingDate.toLocaleDateString('fr-FR')}`,
             icon: Heart,
-            color: "text-pink-500",
+            color: "text-[#c96d4b]",
             href: "/settings"
         }
     ]
@@ -130,9 +137,9 @@ export const DashboardOverview = async () => {
                     <CardHeader>
                         <CardTitle className="font-serif text-2xl text-[#c96d4b] font-bold">Aperçu du Budget</CardTitle>
                     </CardHeader>
-                    <CardContent className="pl-2">
-                        <div className="h-[300px] flex items-center justify-center text-muted-foreground italic bg-muted/20 rounded-2xl border border-dashed border-border m-4">
-                            Graphique du budget (Bientôt disponible en Terracotta)
+                    <CardContent className="p-0">
+                        <div className="h-[300px] w-full">
+                            <BudgetChart paid={totalPaid} total={totalBudget} />
                         </div>
                     </CardContent>
                 </Card>

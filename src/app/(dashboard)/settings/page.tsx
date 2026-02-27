@@ -1,13 +1,15 @@
 import { Settings2 } from "lucide-react"
-import { auth } from "@/lib/auth"
 import { SettingsForm } from "@/features/settings/components/settings-form"
 import prisma from "@/lib/prisma"
+import { getSettings } from "@/features/settings/actions"
 
 const MOCK_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
 
 export default async function SettingsPage() {
-    const session = await auth()
-    const userId = session?.user?.id || MOCK_USER_ID
+    const userId = MOCK_USER_ID
+
+    const settingsResponse = await getSettings()
+    const settings = settingsResponse.data || {}
 
     const user = await prisma.user.findUnique({
         where: { id: userId }
@@ -32,12 +34,17 @@ export default async function SettingsPage() {
                                 <Settings2 className="h-6 w-6 text-[#c96d4b]" />
                             </div>
                             <div>
-                                <h3 className="text-lg font-serif font-bold text-[#3a2a22]">Profil</h3>
-                                <p className="text-xs text-[#7c6d66]">Informations personnelles</p>
+                                <h3 className="text-lg font-serif font-bold text-[#3a2a22]">Mariage</h3>
+                                <p className="text-xs text-[#7c6d66]">Configuration générale</p>
                             </div>
                         </div>
 
-                        <SettingsForm initialName={user?.name || ""} />
+                        <SettingsForm
+                            initialValues={{
+                                wedding_names: settings.wedding_names || user?.name || "",
+                                wedding_date: settings.wedding_date || "2026-09-12",
+                            }}
+                        />
                     </div>
 
                     {/* Placeholder for future settings */}

@@ -8,6 +8,7 @@ export const TaskSchema = z.object({
     dueDate: z.date().optional(),
     status: z.enum(["TODO", "IN_PROGRESS", "DONE"]),
     priority: z.enum(["LOW", "MEDIUM", "HIGH"]),
+    type: z.enum(["TASK", "TIMELINE"]),
 })
 
 export type TaskFormValues = z.infer<typeof TaskSchema>
@@ -19,4 +20,5 @@ export interface Task {
     dueDate?: Date | null
     status: "TODO" | "IN_PROGRESS" | "DONE"
     priority: "LOW" | "MEDIUM" | "HIGH"
+    type: "TASK" | "TIMELINE"
 }

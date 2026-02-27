@@ -35,8 +35,11 @@ export const TimelineClient = ({ initialData }: TimelineClientProps) => {
     const [open, setOpen] = useState(false)
     const [editingTask, setEditingTask] = useState<Task | null>(null)
 
+    // Only show "TIMELINE" type tasks
+    const timelineTasks = initialData.filter(task => task.type === "TIMELINE")
+
     // Sort tasks by due date
-    const sortedTasks = [...initialData].sort((a, b) => {
+    const sortedTasks = [...timelineTasks].sort((a, b) => {
         if (!a.dueDate) return 1
         if (!b.dueDate) return -1
         return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
