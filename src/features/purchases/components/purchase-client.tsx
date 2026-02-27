@@ -28,6 +28,7 @@ import { deletePurchase } from "../actions"
 import { Purchase } from "../schema"
 import { StaggerContainer, StaggerItem } from "@/components/shared/staggered-motion"
 import { motion } from "framer-motion"
+import { ConfirmModal } from "@/components/modals/confirm-modal"
 
 interface PurchaseClientProps {
     initialData: Purchase[]
@@ -43,7 +44,6 @@ export const PurchaseClient = ({ initialData }: PurchaseClientProps) => {
     }
 
     const onDelete = async (id: string) => {
-        if (!window.confirm("Supprimer cet achat ?")) return
         try {
             const response = await deletePurchase(id)
             if (response.error) {
@@ -171,14 +171,19 @@ export const PurchaseClient = ({ initialData }: PurchaseClientProps) => {
                                             >
                                                 <Pencil className="h-4 w-4" />
                                             </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => onDelete(purchase.id)}
-                                                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                                            <ConfirmModal
+                                                title="Supprimer cet achat ?"
+                                                description="Cet article sera retiré de votre liste de boutique."
+                                                onConfirm={() => onDelete(purchase.id)}
                                             >
-                                                <Trash className="h-4 w-4" />
-                                            </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                                                >
+                                                    <Trash className="h-4 w-4" />
+                                                </Button>
+                                            </ConfirmModal>
                                         </div>
                                     </TableCell>
                                 </StaggerItem>

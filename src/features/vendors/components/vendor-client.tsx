@@ -28,6 +28,7 @@ import { deleteVendor } from "../actions"
 import { Vendor } from "../schema"
 import { StaggerContainer, StaggerItem } from "@/components/shared/staggered-motion"
 import { motion } from "framer-motion"
+import { ConfirmModal } from "@/components/modals/confirm-modal"
 
 interface VendorClientProps {
     initialData: Vendor[]
@@ -43,7 +44,6 @@ export const VendorClient = ({ initialData }: VendorClientProps) => {
     }
 
     const onDelete = async (id: string) => {
-        if (!window.confirm("Supprimer ce prestataire ?")) return
         try {
             const response = await deleteVendor(id)
             if (response.error) {
@@ -207,14 +207,19 @@ export const VendorClient = ({ initialData }: VendorClientProps) => {
                                             >
                                                 <Pencil className="h-4 w-4" />
                                             </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => onDelete(vendor.id)}
-                                                className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                                            <ConfirmModal
+                                                title="Supprimer ce prestataire ?"
+                                                description="Toutes les informations liées à ce contact seront définitivement effacées."
+                                                onConfirm={() => onDelete(vendor.id)}
                                             >
-                                                <Trash className="h-4 w-4" />
-                                            </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                                                >
+                                                    <Trash className="h-4 w-4" />
+                                                </Button>
+                                            </ConfirmModal>
                                         </div>
                                     </TableCell>
                                 </StaggerItem>
@@ -285,13 +290,18 @@ export const VendorClient = ({ initialData }: VendorClientProps) => {
                                         >
                                             <Pencil className="mr-2 h-4 w-4" /> Modifier
                                         </Button>
-                                        <Button
-                                            variant="ghost"
-                                            className="flex-1 rounded-xl text-destructive hover:bg-destructive/5"
-                                            onClick={() => onDelete(vendor.id)}
+                                        <ConfirmModal
+                                            title="Supprimer le prestataire ?"
+                                            description="Cette action est irréversible."
+                                            onConfirm={() => onDelete(vendor.id)}
                                         >
-                                            <Trash className="mr-2 h-4 w-4" /> Retirer
-                                        </Button>
+                                            <Button
+                                                variant="ghost"
+                                                className="flex-1 rounded-xl text-destructive hover:bg-destructive/5"
+                                            >
+                                                <Trash className="mr-2 h-4 w-4" /> Retirer
+                                            </Button>
+                                        </ConfirmModal>
                                     </div>
                                 </Card>
                             </StaggerItem>

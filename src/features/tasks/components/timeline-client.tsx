@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils"
 import { updateTaskStatus, deleteTask } from "../actions"
 import { Task } from "../schema"
 import { TaskForm } from "./task-form"
+import { ConfirmModal } from "@/components/modals/confirm-modal"
 
 interface TimelineClientProps {
     initialData: Task[]
@@ -51,7 +52,6 @@ export const TimelineClient = ({ initialData }: TimelineClientProps) => {
     }
 
     const onDelete = async (id: string) => {
-        if (!window.confirm("Supprimer cet événement ?")) return
         try {
             const response = await deleteTask(id)
             if (response.error) {
@@ -176,9 +176,15 @@ export const TimelineClient = ({ initialData }: TimelineClientProps) => {
                                             <button onClick={() => onEdit(task)} className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors border-b border-transparent hover:border-primary pb-0.5">
                                                 Modifier
                                             </button>
-                                            <button onClick={() => onDelete(task.id)} className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-destructive transition-colors border-b border-transparent hover:border-destructive pb-0.5">
-                                                Retirer
-                                            </button>
+                                            <ConfirmModal
+                                                title="Supprimer l'événement ?"
+                                                description="Ce moment fort sera définitivement retiré de votre programme."
+                                                onConfirm={() => onDelete(task.id)}
+                                            >
+                                                <button className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-destructive transition-colors border-b border-transparent hover:border-destructive pb-0.5">
+                                                    Retirer
+                                                </button>
+                                            </ConfirmModal>
                                         </div>
                                     </div>
                                 </div>

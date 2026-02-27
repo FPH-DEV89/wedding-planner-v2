@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils"
 import { updateTaskStatus, deleteTask } from "../actions"
 import { Task } from "../schema"
 import { TaskForm } from "./task-form"
+import { ConfirmModal } from "@/components/modals/confirm-modal"
 
 interface TaskClientProps {
     initialData: Task[]
@@ -45,7 +46,6 @@ export const TaskClient = ({ initialData }: TaskClientProps) => {
     }
 
     const onDelete = async (id: string) => {
-        if (!window.confirm("Supprimer cette tâche ?")) return
         try {
             const response = await deleteTask(id)
             if (response.error) {
@@ -180,14 +180,19 @@ export const TaskClient = ({ initialData }: TaskClientProps) => {
                                     >
                                         <Pencil className="h-5 w-5" />
                                     </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => onDelete(task.id)}
-                                        className="h-10 w-10 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                                    <ConfirmModal
+                                        title="Supprimer la tâche ?"
+                                        description="Cette mission sera définitivement retirée de votre liste."
+                                        onConfirm={() => onDelete(task.id)}
                                     >
-                                        <Trash className="h-5 w-5" />
-                                    </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-10 w-10 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                                        >
+                                            <Trash className="h-5 w-5" />
+                                        </Button>
+                                    </ConfirmModal>
                                 </div>
                             </CardHeader>
                         </Card>

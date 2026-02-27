@@ -28,6 +28,7 @@ import { deleteGuest } from "../actions"
 import { createGuestList, deleteGuestList } from "@/features/guest-lists/actions"
 import { StaggerContainer, StaggerItem } from "@/components/shared/staggered-motion"
 import { motion } from "framer-motion"
+import { ConfirmModal } from "@/components/modals/confirm-modal"
 
 interface Guest {
     id: string
@@ -77,7 +78,6 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
     }
 
     const onDelete = async (id: string) => {
-        if (!window.confirm("Supprimer cet invité ?")) return
         try {
             const response = await deleteGuest(id)
             if (response.error) {
@@ -91,8 +91,6 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
     }
 
     const onDeleteList = async (id: string, name: string) => {
-        if (!window.confirm(`Supprimer la liste "${name}" et tous ses invités ?`)) return
-
         const response = await deleteGuestList(id)
         if (response.error) {
             toast.error(response.error)
@@ -182,14 +180,15 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
                                 <span className="text-[10px] bg-muted px-2 py-0.5 rounded-full text-muted-foreground group-data-[state=active]:bg-white/20 group-data-[state=active]:text-white">
                                     {list._count?.guests || 0}
                                 </span>
-                                <div className="p-1 rounded-full hover:bg-white/20 transition-colors"
-                                    onClick={(e) => {
-                                        e.stopPropagation()
-                                        onDeleteList(list.id, list.name)
-                                    }}
+                                <ConfirmModal
+                                    title={`Supprimer la liste "${list.name}" ?`}
+                                    description="Tous les invités de cette liste seront également supprimés."
+                                    onConfirm={() => onDeleteList(list.id, list.name)}
                                 >
-                                    <Trash className="h-3 w-3 text-muted-foreground group-data-[state=active]:text-white/70 hover:text-white" />
-                                </div>
+                                    <div className="p-1 rounded-full hover:bg-white/20 transition-colors">
+                                        <Trash className="h-3 w-3 text-muted-foreground group-data-[state=active]:text-white/70 hover:text-white" />
+                                    </div>
+                                </ConfirmModal>
                             </TabsTrigger>
                         ))}
                     </TabsList>
@@ -236,14 +235,19 @@ export const GuestClient = ({ initialData, guestLists }: GuestClientProps) => {
                                                 >
                                                     <Pencil className="h-4 w-4" />
                                                 </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => onDelete(guest.id)}
-                                                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
+                                                <ConfirmModal
+                                                    title="Supprimer cet invité ?"
+                                                    description="Cet invité sera retiré de votre liste de mariage."
+                                                    onConfirm={() => onDelete(guest.id)}
                                                 >
-                                                    <Trash className="h-4 w-4" />
-                                                </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
+                                                    >
+                                                        <Trash className="h-4 w-4" />
+                                                    </Button>
+                                                </ConfirmModal>
                                             </div>
                                         </TableCell>
                                     </StaggerItem>
