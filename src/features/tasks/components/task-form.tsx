@@ -85,12 +85,16 @@ export const TaskForm = ({ initialData, onSuccess, labels }: TaskFormProps) => {
                 finalDate.setMinutes(minutes);
             }
 
-            const payload = {
+            const payload: any = {
                 ...values,
-                dueDate: finalDate
             };
+            if (finalDate) {
+                payload.dueDate = finalDate;
+            } else {
+                delete payload.dueDate;
+            }
 
-            delete (payload as any).time;
+            delete payload.time;
 
             let response
 
@@ -108,6 +112,7 @@ export const TaskForm = ({ initialData, onSuccess, labels }: TaskFormProps) => {
                 onSuccess()
             }
         } catch (error) {
+            console.error("[TASK_FORM_ERROR] Full error:", error)
             toast.error("Un problème est survenu.")
         } finally {
             setLoading(false)

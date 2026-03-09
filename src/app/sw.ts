@@ -22,6 +22,10 @@ const serwist = new Serwist({
     runtimeCaching: [
         {
             matcher({ request }) {
+                // Ignore Next.js Server Actions: background sync cannot clone their readable streams.
+                if (request.headers.has("Next-Action")) {
+                    return false;
+                }
                 return ["POST", "PUT", "DELETE"].includes(request.method);
             },
             handler: new NetworkOnly({
