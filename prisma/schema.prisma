@@ -18,9 +18,10 @@ model User {
   guests        Guest[]
   guestLists    GuestList[]
   purchases     Purchase[]
-  tasks         Task[]
-  vendors       Vendor[]
-  settings      Setting[]
+  tasks            Task[]
+  vendors          Vendor[]
+  settings         Setting[]
+  pushSubscriptions PushSubscription[]
 }
 
 model GuestList {
@@ -95,6 +96,17 @@ model Setting {
   id        String   @id @default(cuid())
   key       String   @unique
   value     String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

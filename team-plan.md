@@ -18,6 +18,7 @@ Suite à l'audit global, voici le plan stratégique pour porter le projet au niv
 - [ ] **Animations**: Ajouter des transitions de page via `template.tsx` comme préconisé dans la rétrospective.
 
 ## Distribution of Tasks
-- **Expert Front-End**: Refactorisation i18n et nettoyage CSS.
-- **Expert Database**: Ajout de la gestion des réglages (Settings).
+- **Expert Front-End**: Refactorisation i18n, nettoyage CSS, et transformation PWA (Config `serwist`, Service Worker, Background Sync, UI de secours Hors Ligne).
+- **Expert Database**: Ajout de la gestion des réglages (Settings) et de la table `PushSubscription` pour les notifications web push.
 - **Expert Design**: Optimisations Mobile & Animations.
+- **Chef (Head of Engineering)**: Cadrage de l'architecture offline et push (validé), génération du logo premium (terminé), supervision globale de l'implémentation.

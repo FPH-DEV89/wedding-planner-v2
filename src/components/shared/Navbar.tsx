@@ -2,6 +2,7 @@ import { MobileSidebar } from "./MobileSidebar"
 import prisma from "@/lib/prisma"
 import { UserButton } from "./UserButton"
 import { getSettings } from "@/features/settings/actions"
+import { PushSubscriber } from "@/components/push-subscriber"
 
 export const Navbar = async () => {
     const userId = "cm7d4v8x20000jps8p6y5p1r0"
@@ -20,6 +21,7 @@ export const Navbar = async () => {
         <div className="flex items-center p-6 bg-background/80 backdrop-blur-md border-b border-border/40 sticky top-0 z-50">
             <MobileSidebar />
             <div className="flex w-full justify-end items-center gap-4">
+                <PushSubscriber />
                 <UserButton initials={initials} displayName={displayName} />
             </div>
         </div>
