@@ -20,25 +20,31 @@ export async function getTasks() {
     }
 }
 
-export async function createTask(values: any) {
+export async function createTask(values: TaskFormValues) {
+    const validatedFields = TaskSchema.safeParse(values)
+
+    if (!validatedFields.success) {
+        return { error: "Champs invalides." }
+    }
+
     try {
-        console.log("DEBUG_ACTION_INVOKED", values)
-        // const userId = SHARED_USER_ID
-        /*
+        const userId = SHARED_USER_ID
+        const { time, ...data } = validatedFields.data
+
         await prisma.task.create({
             data: {
-                title: values.title,
-                status: values.status || "TODO",
-                priority: values.priority || "MEDIUM",
-                type: values.type || "TASK",
+                ...data,
                 userId,
             },
         })
-        */
 
-        return { success: "ACTION_WORKED_WITHOUT_DB" }
+        revalidatePath("/tasks")
+        revalidatePath("/timeline")
+        revalidatePath("/dashboard")
+        return { success: "Tâche ajoutée !" }
     } catch (error: any) {
-        return { error: `Crash Action: ${error.message}` }
+        console.error("SERVER_ACTION_CREATE_TASK_ERROR:", error)
+        return { error: `Erreur Serveur: ${error.message || "Inconnue"}` }
     }
 }
 
