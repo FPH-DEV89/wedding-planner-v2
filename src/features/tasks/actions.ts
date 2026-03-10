@@ -22,7 +22,9 @@ export async function getTasks() {
 
 export async function createTask(values: any) {
     try {
-        const userId = SHARED_USER_ID
+        console.log("DEBUG_ACTION_INVOKED", values)
+        // const userId = SHARED_USER_ID
+        /*
         await prisma.task.create({
             data: {
                 title: values.title,
@@ -32,9 +34,9 @@ export async function createTask(values: any) {
                 userId,
             },
         })
+        */
 
-        // No revalidation for now
-        return { success: "Tâche ajoutée (Debug) !" }
+        return { success: "ACTION_WORKED_WITHOUT_DB" }
     } catch (error: any) {
         return { error: `Crash Action: ${error.message}` }
     }
