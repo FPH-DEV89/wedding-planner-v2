@@ -31,7 +31,7 @@ export async function createTask(values: TaskFormValues) {
         const userId = SHARED_USER_ID
         const { time, ...data } = validatedFields.data
 
-        const task = await prisma.task.create({
+        await prisma.task.create({
             data: {
                 ...data,
                 userId,
@@ -39,10 +39,11 @@ export async function createTask(values: TaskFormValues) {
         })
 
         revalidatePath("/tasks")
-        revalidatePath("/timeline")
-        revalidatePath("/dashboard")
-        return { success: "Tâche ajoutée !", data: task }
+        // revalidatePath("/timeline")
+        // revalidatePath("/dashboard")
+        return { success: "Tâche ajoutée !" }
     } catch (error) {
+        console.error("SERVER_ACTION_CREATE_TASK_ERROR:", error)
         return { error: "Erreur lors de la création." }
     }
 }
