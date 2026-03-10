@@ -42,9 +42,9 @@ export async function createTask(values: TaskFormValues) {
         // revalidatePath("/timeline")
         // revalidatePath("/dashboard")
         return { success: "Tâche ajoutée !" }
-    } catch (error) {
+    } catch (error: any) {
         console.error("SERVER_ACTION_CREATE_TASK_ERROR:", error)
-        return { error: "Erreur lors de la création." }
+        return { error: `Erreur Serveur: ${error.message || "Inconnue"}` }
     }
 }
 
