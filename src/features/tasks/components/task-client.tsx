@@ -28,6 +28,7 @@ import { updateTaskStatus, deleteTask } from "../actions"
 import { Task } from "../schema"
 import { TaskForm } from "./task-form"
 import { ConfirmModal } from "@/components/modals/confirm-modal"
+import { AutoScheduleButton } from "@/components/tasks/auto-schedule-button"
 
 interface TaskClientProps {
     initialData: Task[]
@@ -100,38 +101,42 @@ export const TaskClient = ({ initialData }: TaskClientProps) => {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-4xl font-serif font-extrabold tracking-tight text-[#c96d4b]">Liste des Tâches</h2>
                     <p className="text-sm text-[#7c6d66] mt-1 font-medium">
                         {todoTasks.filter(t => t.status !== "DONE").length} missions à accomplir pour le jour J.
                     </p>
                 </div>
-                <Dialog open={open} onOpenChange={(val) => {
-                    setOpen(val)
-                    if (!val) setEditingTask(null)
-                }}>
-                    <DialogTrigger asChild>
-                        <Button className="bg-[#c96d4b] hover:bg-[#b05a3a] text-white rounded-2xl shadow-md transition-all hover:scale-105 active:scale-95">
-                            <Plus className="mr-2 h-4 w-4" /> Nouvelle tâche
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px] bg-background rounded-3xl border-border/40 shadow-2xl p-0 overflow-hidden">
-                        <div className="p-6 pb-0">
-                            <DialogHeader>
-                                <DialogTitle className="text-2xl font-serif font-bold text-primary">
-                                    {editingTask ? "Modifier la tâche" : "Ajouter une tâche"}
-                                </DialogTitle>
-                            </DialogHeader>
-                        </div>
-                        <div className="p-6">
-                            <TaskForm
-                                initialData={editingTask}
-                                onSuccess={() => setOpen(false)}
-                            />
-                        </div>
-                    </DialogContent>
-                </Dialog>
+                <div className="flex items-center gap-3">
+                    <AutoScheduleButton />
+                    <Dialog open={open} onOpenChange={(val) => {
+                        setOpen(val)
+                        if (!val) setEditingTask(null)
+                    }}>
+                        <DialogTrigger asChild>
+                            <Button className="bg-[#c96d4b] hover:bg-[#b05a3a] text-white rounded-2xl shadow-md transition-all hover:scale-105 active:scale-95">
+                                <Plus className="mr-2 h-4 w-4" /> Nouvelle tâche
+                            </Button>
+                        </DialogTrigger>
+
+                        <DialogContent className="sm:max-w-[425px] bg-background rounded-3xl border-border/40 shadow-2xl p-0 overflow-hidden">
+                            <div className="p-6 pb-0">
+                                <DialogHeader>
+                                    <DialogTitle className="text-2xl font-serif font-bold text-primary">
+                                        {editingTask ? "Modifier la tâche" : "Ajouter une tâche"}
+                                    </DialogTitle>
+                                </DialogHeader>
+                            </div>
+                            <div className="p-6">
+                                <TaskForm
+                                    initialData={editingTask}
+                                    onSuccess={() => setOpen(false)}
+                                />
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                </div>
             </div>
 
             <div className="grid gap-3 mt-6">

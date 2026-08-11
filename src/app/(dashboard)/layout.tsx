@@ -2,6 +2,7 @@ import { Sidebar } from "@/components/shared/Sidebar"
 import { Navbar } from "@/components/shared/Navbar"
 import { BottomNav } from "@/components/shared/BottomNav"
 import { QuickAddDial } from "@/components/shared/QuickAddDial"
+import { AiChatWidget } from "@/components/ai/ai-chat-widget"
 
 const DashboardLayout = ({
     children
@@ -19,9 +20,11 @@ const DashboardLayout = ({
             </main>
             <BottomNav />
             <QuickAddDial />
+            <AiChatWidget />
         </div>
     )
 }
 
 export default DashboardLayout
+
 
