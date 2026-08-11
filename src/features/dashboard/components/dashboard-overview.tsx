@@ -16,6 +16,8 @@ import { BudgetChart } from "./budget-chart"
 import { getSettings } from "@/features/settings/actions"
 import { cn } from "@/lib/utils"
 
+import { QuickActionsBar } from "./quick-actions-bar"
+
 const SHARED_USER_ID = "cm7d4v8x20000jps8p6y5p1r0"
 
 export const DashboardOverview = async () => {
@@ -24,6 +26,11 @@ export const DashboardOverview = async () => {
     const settingsResponse = await getSettings()
     const settings = settingsResponse.data || {}
     const weddingDate = settings.wedding_date ? new Date(settings.wedding_date) : new Date("2026-09-12")
+
+    const guestLists = await prisma.guestList.findMany({
+        where: { userId },
+        select: { id: true, name: true }
+    })
 
     const guestCounts = await prisma.guest.count({
         where: { userId }
@@ -181,6 +188,9 @@ export const DashboardOverview = async () => {
                     </div>
                 </div>
             </div>
+
+            {/* QUICK ACTIONS BAR */}
+            <QuickActionsBar guestLists={guestLists} />
 
             {/* METRICS GRID */}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
