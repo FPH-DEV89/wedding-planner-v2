@@ -8,6 +8,9 @@ import { revalidatePath } from "next/cache"
 import { GuestListSchema, GuestListFormValues } from "./schema"
 
 export async function getGuestLists() {
+    const session = await auth()
+    if (!session?.user) throw new Error("Non authentifié")
+
     const userId = SHARED_USER_ID
 
     try {
@@ -22,11 +25,15 @@ export async function getGuestLists() {
         })
         return { data: lists }
     } catch (error) {
+        console.error("Erreur guest-lists:", error)
         return { error: "Impossible de récupérer les listes." }
     }
 }
 
 export async function createGuestList(values: GuestListFormValues) {
+    const session = await auth()
+    if (!session?.user) throw new Error("Non authentifié")
+
     const validatedFields = GuestListSchema.safeParse(values)
 
     if (!validatedFields.success) {
@@ -46,19 +53,26 @@ export async function createGuestList(values: GuestListFormValues) {
         revalidatePath("/guests")
         return { success: "Liste créée !", data: list }
     } catch (error) {
+        console.error("Erreur guest-lists:", error)
         return { error: "Erreur lors de la création." }
     }
 }
 
 export async function deleteGuestList(id: string) {
+    const session = await auth()
+    if (!session?.user) throw new Error("Non authentifié")
+
     try {
-        await prisma.guestList.delete({
-            where: { id },
+        const deleted = await prisma.guestList.deleteMany({
+            where: { id, userId: SHARED_USER_ID },
         })
+
+        if (deleted.count === 0) return { error: "Élément introuvable" }
 
         revalidatePath("/guests")
         return { success: "Liste supprimée !" }
     } catch (error) {
+        console.error("Erreur guest-lists:", error)
         return { error: "Erreur lors de la suppression." }
     }
 }

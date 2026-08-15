@@ -5,50 +5,67 @@ import { fetchOpenRouterCompletion, AiChatMessage, WeddingContext } from '@/lib/
 import { auth } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 
+const SHARED_USER_ID = "cm7d4v8x20000jps8p6y5p1r0";
 
-
+// Rate limit simple en mémoire : max 15 requêtes / 60 s par utilisateur
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>()
+function checkRateLimit(userId: string): boolean {
+  const now = Date.now()
+  const entry = rateLimitStore.get(userId)
+  if (!entry || now > entry.resetAt) {
+    rateLimitStore.set(userId, { count: 1, resetAt: now + 60_000 })
+    return true
+  }
+  if (entry.count >= 15) return false
+  entry.count++
+  return true
+}
 
 /**
  * Action Serveur pour poser une question à l'Assistant IA
  */
 export async function askAiAssistantAction(messages: AiChatMessage[]) {
-  try {
-    const session = await auth();
-    const userId = session?.user?.id;
+  const session = await auth();
+  if (!session?.user) throw new Error("Non authentifié");
 
+  const userId = SHARED_USER_ID;
+
+  if (!checkRateLimit(userId)) {
+    throw new Error("Trop de requêtes, réessayez dans une minute");
+  }
+
+  try {
     let context: WeddingContext = {};
 
-    if (userId) {
-      // Récupération des données du mariage pour enrichir le contexte
-      const [settings, vendors, guests, tasks, purchases] = await Promise.all([
-        prisma.setting.findMany({ where: { userId } }),
-        prisma.vendor.findMany({ where: { userId } }),
-        prisma.guest.findMany({ where: { userId } }),
-        prisma.task.findMany({ where: { userId } }),
-        prisma.purchase.findMany({ where: { userId } })
-      ]);
+    // Récupération des données du mariage pour enrichir le contexte
+    const [settings, vendors, guests, tasks, purchases] = await Promise.all([
+      prisma.setting.findMany({ where: { userId } }),
+      prisma.vendor.findMany({ where: { userId } }),
+      prisma.guest.findMany({ where: { userId } }),
+      prisma.task.findMany({ where: { userId } }),
+      prisma.purchase.findMany({ where: { userId } })
+    ]);
 
-      const weddingDate = settings.find(s => s.key === 'wedding_date')?.value || null;
-      const coupleNames = settings.find(s => s.key === 'couple_names')?.value || null;
-      const totalBudgetSetting = settings.find(s => s.key === 'total_budget')?.value;
-      const totalBudget = totalBudgetSetting ? parseFloat(totalBudgetSetting) : 0;
+    const weddingDate = settings.find(s => s.key === 'wedding_date')?.value || null;
+    const coupleNames = settings.find(s => s.key === 'couple_names')?.value || null;
+    const totalBudgetSetting = settings.find(s => s.key === 'total_budget')?.value;
+    const totalBudget = totalBudgetSetting ? parseFloat(totalBudgetSetting) : 0;
 
-      const vendorsTotal = vendors.reduce((acc, v) => acc + (v.price || 0), 0);
-      const purchasesTotal = purchases.reduce((acc, p) => acc + ((p.price || 0) * (p.quantity || 1)), 0);
-      const totalSpent = vendorsTotal + purchasesTotal;
+    const vendorsTotal = vendors.reduce((acc, v) => acc + (v.price || 0), 0);
+    const purchasesTotal = purchases.reduce((acc, p) => acc + ((p.price || 0) * (p.quantity || 1)), 0);
+    const totalSpent = vendorsTotal + purchasesTotal;
 
-      const pendingTasksCount = tasks.filter(t => t.status !== 'DONE').length;
+    const pendingTasksCount = tasks.filter(t => t.status !== 'DONE').length;
 
-      context = {
-        weddingDate,
-        coupleNames,
-        totalBudget,
-        totalSpent,
-        guestCount: guests.length,
-        vendorCount: vendors.length,
-        pendingTasksCount
-      };
-    }
+    context = {
+      weddingDate,
+      coupleNames,
+      totalBudget,
+      totalSpent,
+      guestCount: guests.length,
+      vendorCount: vendors.length,
+      pendingTasksCount
+    };
 
     const reply = await fetchOpenRouterCompletion(messages, context);
     return { success: true, reply };
@@ -156,14 +173,12 @@ const DEFAULT_SCHEDULE_TEMPLATES: ScheduleTemplateTask[] = [
  * Action Serveur pour générer automatiquement le rétroplanning de tâches
  */
 export async function generateAutoScheduleAction() {
+  const session = await auth();
+  if (!session?.user) throw new Error("Non authentifié");
+
+  const userId = SHARED_USER_ID;
+
   try {
-    const session = await auth();
-    const userId = session?.user?.id;
-
-    if (!userId) {
-      return { success: false, error: 'Non autorisé' };
-    }
-
     // Récupérer la date du mariage dans les Settings
     const settingWeddingDate = await prisma.setting.findFirst({
       where: { userId, key: 'wedding_date' }
